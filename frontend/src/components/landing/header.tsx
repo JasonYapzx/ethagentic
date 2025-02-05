@@ -3,12 +3,9 @@
 import { Icons } from "@/components/common/icons";
 import { MobileDrawer } from "@/components/common/mobile-drawer";
 import { buttonVariants } from "@/components/ui/button";
-import { easeInOutCubic } from "@/lib/animation";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
-import { AnimatePresence, motion, useAnimation } from "framer-motion";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export function Header() {
   return (
@@ -24,7 +21,7 @@ export function Header() {
         </Link>
         <div className="hidden lg:block">
           <Link
-            href="#"
+            href="/app"
             className={cn(
               buttonVariants({ variant: "default" }),
               "h-8 text-primary-foreground rounded-lg group tracking-tight font-medium"

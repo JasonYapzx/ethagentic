@@ -1,5 +1,6 @@
 import { Section } from "@/components/common/section";
 import { Button } from "@/components/ui/button";
+import { Link } from "lucide-react";
 
 export function CTA() {
   return (
@@ -10,7 +11,7 @@ export function CTA() {
         </p>
 
         <div className="flex justify-center">
-          <Button className="flex items-center gap-2">Get Started</Button>
+          <Link className="flex items-center gap-2" href="/app">Get Started</Link>
         </div>
       </div>
     </Section>

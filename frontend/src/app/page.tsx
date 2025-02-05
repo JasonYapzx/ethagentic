@@ -5,7 +5,6 @@ import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
 import { Hero } from "@/components/landing/hero";
 import { UseCases } from "@/components/landing/use-cases";
-import Image from "next/image";
 
 export default function Home() {
   return (

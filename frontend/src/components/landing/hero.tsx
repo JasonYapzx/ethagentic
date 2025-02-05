@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { lazy, Suspense, useEffect, useState } from "react";
+const LazySpline = lazy(() => import("@splinetool/react-spline"));
 
 const ease = [0.16, 1, 0.3, 1];
 
@@ -119,7 +120,6 @@ function HeroCTA() {
     </div>
   );
 }
-const LazySpline = lazy(() => import("@splinetool/react-spline"));
 
 export function Hero() {
   const [showSpline, setShowSpline] = useState(false);

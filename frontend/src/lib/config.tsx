@@ -6,6 +6,9 @@ import {
   PlugIcon,
   UsersIcon,
   ZapIcon,
+  Home, Search, Settings, PenToolIcon as Tool, User, MapPin,
+  Package,
+  Sparkles
 } from "lucide-react";
 
 export const BLUR_FADE_DELAY = 0.15;
@@ -263,3 +266,12 @@ export const siteConfig = {
 };
 
 export type SiteConfig = typeof siteConfig;
+
+
+export const AppNavBar = [
+  { icon: Home, label: "Home", href: "/app" },
+  { icon: Search, label: "Search", href: "/app/search" },
+  { icon: Package, label: "Inventories", href: "/app/search" },
+  { icon: Sparkles, label: "Assistant", href: "/app/assistant" },
+  { icon: Settings, label: "Tools", href: "/app/tools" },
+]
