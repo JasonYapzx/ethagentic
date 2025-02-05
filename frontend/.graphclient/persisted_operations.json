@@ -1,0 +1,4 @@
+{
+  "aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b": "query GetItemsAdded {\n  itemAddeds {\n    id\n    itemId\n    name\n    quantity\n  }\n}",
+  "237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5": "query GetSupplierByName($name: String!) {\n  SupplierSearch(text: $name) {\n    id\n    name\n    totalAmountSpent\n    totalOrders\n    avgDeliveryTime\n  }\n}"
+}

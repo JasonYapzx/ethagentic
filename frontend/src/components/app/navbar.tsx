@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from "react";
+import { cn } from "@/lib/utils";
 import {
   Sidebar,
   SidebarContent,
@@ -11,14 +11,14 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarProvider,
-} from "@/components/ui/sidebar"
-import { FlickeringGrid } from "@/components/ui/flickering-grid"
-import { Button } from "@/components/ui/button"
-import { Icons } from "../common/icons"
-import { LogOut, Plus } from "lucide-react"
-import { AppNavBar } from "@/lib/config"
-import { ThemeToggle } from "../common/theme-toggle"
-import { usePathname } from "next/navigation"
+} from "@/components/ui/sidebar";
+import { FlickeringGrid } from "@/components/ui/flickering-grid";
+import { Button } from "@/components/ui/button";
+import { Icons } from "../common/icons";
+import { LogOut, Plus } from "lucide-react";
+import { AppNavBar } from "@/lib/config";
+import { ThemeToggle } from "../common/theme-toggle";
+import { usePathname } from "next/navigation";
 
 export function NavBar({ children }: { children: React.ReactNode }) {
   const [isHovered, setIsHovered] = React.useState(false);
@@ -28,16 +28,27 @@ export function NavBar({ children }: { children: React.ReactNode }) {
     <SidebarProvider>
       <div className="flex min-h-screen w-full">
         <Sidebar
-          className={cn("w-[60px] transition-all duration-300 ease-in-out border-r", isHovered && "w-64")}
+          className={cn(
+            "w-[60px] transition-all duration-300 ease-in-out border-r",
+            isHovered && "w-64"
+          )}
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
         >
           <SidebarHeader className="border-b">
             <SidebarMenu>
               <SidebarMenuItem className="">
-                <SidebarMenuButton size="sm" className="relative overflow-hidden w-full rounded-none justify-start">
+                <SidebarMenuButton
+                  size="sm"
+                  className="relative overflow-hidden w-full rounded-none justify-start"
+                >
                   <Icons.logo className="size-4 shrink-0" />
-                  <span className={cn("ml-2 transition-opacity duration-300", isHovered ? "opacity-100" : "opacity-0")}>
+                  <span
+                    className={cn(
+                      "ml-2 transition-opacity duration-300",
+                      isHovered ? "opacity-100" : "opacity-0"
+                    )}
+                  >
                     Storagen
                   </span>
                 </SidebarMenuButton>
@@ -55,19 +66,39 @@ export function NavBar({ children }: { children: React.ReactNode }) {
           <SidebarContent className="p-2 overflow-hidden">
             <SidebarMenu>
               <SidebarMenuItem>
-                <Button variant="outline" className="w-full justify-start gap-2" size="sm">
+                <Button
+                  variant="outline"
+                  className="w-full justify-start gap-2"
+                  size="sm"
+                >
                   <Plus className="size-4 shrink-0" />
-                  <span className={cn("ml-2 transition-opacity duration-300", isHovered ? "opacity-100" : "opacity-0")}>
+                  <span
+                    className={cn(
+                      "ml-2 transition-opacity duration-300",
+                      isHovered ? "opacity-100" : "opacity-0"
+                    )}
+                  >
                     Create
                   </span>
                 </Button>
               </SidebarMenuItem>
               {AppNavBar.map((item) => (
                 <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton isActive={pathName === item.href} className={`w-full h-full py-3 justify-start bg-background hover:bg-accent hover:text-accent-foreground ${pathName === item.href ? 'bg-primary/40 text-white hover:text-white hover:bg-primary/70' : ''}`} size="sm">
+                  <SidebarMenuButton
+                    isActive={pathName === item.href}
+                    className={`w-full h-full py-3 justify-start bg-background hover:bg-accent hover:text-accent-foreground ${
+                      pathName === item.href
+                        ? "bg-primary/40 text-white hover:text-white hover:bg-primary/70"
+                        : ""
+                    }`}
+                    size="sm"
+                  >
                     <item.icon className="size-4 shrink-0 ml-[5px]" />
                     <a
-                      className={cn("ml-2 transition-opacity duration-300", isHovered ? "opacity-100" : "opacity-0")}
+                      className={cn(
+                        "ml-2 transition-opacity duration-300",
+                        isHovered ? "opacity-100" : "opacity-0"
+                      )}
                       href={item.href}
                     >
                       {item.label}
@@ -80,14 +111,23 @@ export function NavBar({ children }: { children: React.ReactNode }) {
           <SidebarFooter className="border-t p-2">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="w-full justify-start ml-1">
-                  <ThemeToggle className="size-4 shrink-0"/>
+                <SidebarMenuButton
+                  asChild
+                  className="w-full justify-start ml-1"
+                >
+                  <ThemeToggle className="size-4 shrink-0" />
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton className="w-full justify-start ml-1">
                   <LogOut className="size-4 shrink-0" />
-                  <a href="/" className={cn("ml-2 transition-opacity duration-300", isHovered ? "opacity-100" : "opacity-0")}>
+                  <a
+                    href="/"
+                    className={cn(
+                      "ml-2 transition-opacity duration-300",
+                      isHovered ? "opacity-100" : "opacity-0"
+                    )}
+                  >
                     Sign Out
                   </a>
                 </SidebarMenuButton>
@@ -98,6 +138,5 @@ export function NavBar({ children }: { children: React.ReactNode }) {
         <main className="flex-1 bg-background w-full mr-48">{children}</main>
       </div>
     </SidebarProvider>
-  )
+  );
 }
-

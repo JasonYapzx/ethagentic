@@ -1,0 +1,9 @@
+query GetSupplierByName($name: String!) {
+  SupplierSearch(text: $name) {
+    id
+    name
+    totalAmountSpent
+    totalOrders
+    avgDeliveryTime
+  }
+}
