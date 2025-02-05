@@ -30,7 +30,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
         : "text-center";
 
     return (
-      <section id={id} ref={ref}>
+      <section id={sectionId} ref={ref}>
         <div className={cn("relative mx-auto container", className)}>
           {(title || subtitle || description) && (
             <div

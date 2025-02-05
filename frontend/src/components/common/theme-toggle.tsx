@@ -1,18 +1,17 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-export function ThemeToggle() {
+export function ThemeToggle({ className, children }: { className?: string, children?: React.ReactNode }) {
   const { setTheme, theme } = useTheme();
-  // Don't show in production
-  if (process.env.NODE_ENV === "production") return null;
   return (
     <Button
       variant="ghost"
       size="icon"
-      className="fixed bottom-1 left-1 z-50"
+      className={className}
       onClick={() => setTheme(theme === "light" ? "dark" : "light")}
     >
       <Sun className="h-[1.5rem] w-[1.3rem] dark:hidden" />
