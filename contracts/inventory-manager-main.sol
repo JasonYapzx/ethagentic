@@ -21,7 +21,16 @@ contract InventoryManager {
         uint256 price,
         string supplier
     );
-    event ItemUpdated(uint256 indexed itemId, uint256 quantity);
+    event StockIncreased(
+        uint256 indexed itemId,
+        uint256 amount,
+        uint256 newQuantity
+    );
+    event StockDecreased(
+        uint256 indexed itemId,
+        uint256 amount,
+        uint256 newQuantity
+    );
     event LowStockDetected(
         uint256 indexed itemId,
         string name,
@@ -46,21 +55,32 @@ contract InventoryManager {
         emit ItemAdded(itemId, name, quantity, threshold, price, supplier);
     }
 
-    function updateQuantity(uint256 itemId, uint256 newQuantity) public {
-        inventory[itemId].quantity = newQuantity;
-        emit ItemUpdated(itemId, newQuantity);
+    function increaseStock(uint256 itemId, uint256 amount) public {
+        inventory[itemId].quantity += amount;
+        emit StockIncreased(itemId, amount, inventory[itemId].quantity);
+    }
 
-        if (newQuantity < inventory[itemId].threshold) {
-            emit LowStockDetected(itemId, inventory[itemId].name, newQuantity);
+    function decreaseStock(uint256 itemId, uint256 amount) public {
+        require(
+            inventory[itemId].quantity >= amount,
+            "Not enough stock available."
+        );
+        inventory[itemId].quantity -= amount;
+        emit StockDecreased(itemId, amount, inventory[itemId].quantity);
+
+        if (inventory[itemId].quantity < inventory[itemId].threshold) {
+            emit LowStockDetected(
+                itemId,
+                inventory[itemId].name,
+                inventory[itemId].quantity
+            );
         }
     }
 
     function restockItem(uint256 itemId, uint256 restockAmount) public {
         Item storage item = inventory[itemId];
         uint256 totalCost = restockAmount * item.price;
-
         item.quantity += restockAmount;
-
         emit RestockInitiated(itemId, restockAmount, item.supplier, totalCost);
     }
 
