@@ -19,6 +19,8 @@ import { LogOut, Plus } from "lucide-react"
 import { AppNavBar } from "@/lib/config"
 import { ThemeToggle } from "../common/theme-toggle"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
+// import StoragentLogo from "../../public/images/storagent.png";
 
 export function NavBar({ children }: { children: React.ReactNode }) {
   const [isHovered, setIsHovered] = React.useState(false);
@@ -37,8 +39,8 @@ export function NavBar({ children }: { children: React.ReactNode }) {
               <SidebarMenuItem className="">
                 <SidebarMenuButton size="sm" className="relative overflow-hidden w-full rounded-none justify-start">
                   <Icons.logo className="size-4 shrink-0" />
-                  <span className={cn("ml-2 transition-opacity duration-300", isHovered ? "opacity-100" : "opacity-0")}>
-                    Storagen
+                  <span>
+                  <Image src="/images/storagent.png" alt="Storagent Logo" width={140} height={140} />
                   </span>
                 </SidebarMenuButton>
                 <FlickeringGrid
