@@ -8,7 +8,9 @@ dotenv.config();
 export class RestockItemTool extends Tool {
   name = "RestockItemTool";
   description =
-    "A tool to manually restock an item by increasing its quantity in the InventoryManager contract.";
+    "A tool to manually restock an item by increasing its quantity in the InventoryManager contract." + 
+    "This tool must be called to update the smart contract when a restock is done."
+    "If name is provided instead of id, run query the contract to find out which to restock."
 
   private contract_address: string;
   constructor(contract_address: string) {
@@ -89,8 +91,9 @@ export class RestockItemTool extends Tool {
 
 export class DecreaseStockTool extends Tool {
   name = "DecreaseStockTool";
-  description = `A tool to decrease the stock levels of an existing item in the InventoryManager contract. If name is provided instead of id, 
-    run query the contract to find out which to decrement`;
+  description = `A tool to decrease the stock levels of an existing item in the InventoryManager contract. 
+    If name is provided instead of id, run query the contract to find out which to decrement.
+    After decrementing the stock level, you have to run a check to decide whether or not restock.`;
 
   private contract_address: string;
   constructor(contract_address: string) {
@@ -161,7 +164,7 @@ export class DecreaseStockTool extends Tool {
       // Retrieve the updated item info: (name, quantity, threshold, price, supplier)
       const [name, newQuantity, threshold, price, supplier] =
         await contract.getItem(numItemId);
-      return `DecreaseStock successful! Item ${numItemId} ("${name}") is now at quantity: ${newQuantity}.`;
+      return `DecreaseStock successful! Item ${numItemId} ("${name}") is now at quantity: ${newQuantity}. Should I run restock decision process?`;
     } catch (error: any) {
       return `Transaction failed: ${error.message}`;
     }
@@ -223,8 +226,9 @@ export class GraphStockAggregationQueryTool extends Tool {
     }
 
     try {
-      // 2. Send the GraphQL query to your subgraph endpoint
-      //    Replace this with your actual subgraph URL
+
+      await sleep(5000);
+
       const subgraphUrl =
         process.env.SUBGRAPH_URL ||
         "https://api.thegraph.com/subgraphs/name/your-subgraph";
@@ -241,7 +245,6 @@ export class GraphStockAggregationQueryTool extends Tool {
 
       const data = await response.json();
 
-      // 3. Return the result as a stringified JSON (or a more customized format)
       return JSON.stringify(data, null, 2);
     } catch (error: any) {
       return `Error while querying The Graph: ${error.message}`;
@@ -256,14 +259,12 @@ export class GraphSupplierLeadTimeQueryTool extends Tool {
     "Takes one optional input: a JSON string with a 'query' field. " +
     "If not provided, it uses a default query that fetches the first 10 suppliers along with avgDeliveryTime.";
 
-  // Single top-level input (optional) -> transform to string or undefined
   schema = z
     .object({
       input: z.string().optional(),
     })
     .transform(({ input }) => input);
 
-  // Default query if none provided
   private defaultQuery = `
       {
         suppliers(first: 10) {
@@ -279,7 +280,6 @@ export class GraphSupplierLeadTimeQueryTool extends Tool {
   async _call(input: string | undefined): Promise<string> {
     let queryToUse = this.defaultQuery;
 
-    // If user supplies a query, parse JSON and override default
     if (input) {
       try {
         const parsed = JSON.parse(input);
@@ -292,7 +292,8 @@ export class GraphSupplierLeadTimeQueryTool extends Tool {
     }
 
     try {
-      // Replace with your actual subgraph URL
+      await sleep(5000);
+
       const subgraphUrl =
         process.env.SUBGRAPH_URL ||
         "https://api.thegraph.com/subgraphs/name/your-subgraph";
@@ -316,23 +317,22 @@ export class GraphSupplierLeadTimeQueryTool extends Tool {
 }
 
 export class DefaultGraphQueryTool extends Tool {
-  name = "DefaultGraphQuery";
+  name = "InventoryLevelsGraphQuery";
   description =
     "A tool to query The Graph subgraph for the top 5 suppliers, the items in the inventory and the threshold amounts." +
+    "Run this query to get the current inventory levels." + 
     "Querying this will give the supplier's id, name, totalOrders, totalAmountSpent" +
-    "items id, itemId, name, quantity" +
-    " itemsAdded(initial amounts) id, itemId, name, quantity, threshold" +
+    "items shows the CURRENT inventory amounts. it has id, itemId, name, quantity" +
+    " itemsAdded shows the INITIAL inventory amounts. it has id, itemId, name, quantity, threshold" +
     "Takes one optional input: a JSON string with a 'query' field. " +
     "If not provided, it uses a default query with 'suppliers(first: 5)' and 'itemAddeds(first: 5)'.";
 
-  // Single top-level 'input' -> transforms to string or undefined
   schema = z
     .object({
       input: z.string().optional(),
     })
     .transform(({ input }) => input);
 
-  // The default GraphQL query
   private defaultQuery = `
    {
     suppliers(first: 5) {
@@ -358,7 +358,6 @@ export class DefaultGraphQueryTool extends Tool {
     `;
 
   async _call(input: string | undefined): Promise<string> {
-    // Determine which query to use
     let queryToUse = this.defaultQuery;
 
     if (input) {
@@ -372,12 +371,13 @@ export class DefaultGraphQueryTool extends Tool {
       }
     }
 
-    // Replace with your actual subgraph endpoint
-    const subgraphUrl =
-      process.env.SUBGRAPH_URL ||
-      "https://api.thegraph.com/subgraphs/name/your-subgraph";
-
+    
     try {
+      await sleep(5000);
+      
+      const subgraphUrl =
+        process.env.SUBGRAPH_URL ||
+        "https://api.thegraph.com/subgraphs/name/your-subgraph";
       const response = await fetch(subgraphUrl, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -394,4 +394,8 @@ export class DefaultGraphQueryTool extends Tool {
       return `Error while querying The Graph: ${error.message}`;
     }
   }
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
