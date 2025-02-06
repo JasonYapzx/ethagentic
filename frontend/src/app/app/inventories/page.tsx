@@ -5,9 +5,13 @@ import { UsageGraph } from "@/components/app/dashboard/usage-graph"
 import { InventoryTable } from "@/components/app/dashboard/inventory-table"
 import { Overview } from "@/components/app/dashboard/overview"
 import { Section } from "@/components/common/section"
+import { ethers } from "ethers";
 
 export default function InventoryPage() {
-  
+  const createInventoryItem = async () => {
+    
+  }
+
   return (
     <div className="w-full space-y-6">
       <Section id="overview" title="Inventory Dashboard">
