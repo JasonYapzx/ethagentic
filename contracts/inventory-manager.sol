@@ -2,37 +2,61 @@
 pragma solidity ^0.8.0;
 
 contract InventoryManager {
-    mapping(uint256 => uint256) public stockLevels; // productId => stock
-    uint256 public restockThreshold = 50; // Example threshold
+    // WE ARE OMITTING ALL OWNER CHECKS FOR HACKATHON DEMO PURPOSES
+    struct Item {
+        string name;
+        uint256 quantity;
+        uint256 threshold; // Min stock before AI orders more
+        uint256 price; // Price per unit
+        string supplier;
+    }
 
-    event StockDecremented(uint256 productId, uint256 newStock);
-    event RestockTriggered(uint256 productId, uint256 quantity);
+    mapping(uint256 => Item) public inventory;
 
-    // Constructor to set initial stock levels
-    constructor(uint256[] memory productIds, uint256[] memory initialStocks) {
-        require(productIds.length == initialStocks.length, "Mismatched inputs");
-        for (uint256 i = 0; i < productIds.length; i++) {
-            stockLevels[productIds[i]] = initialStocks[i];
+    event ItemAdded(uint256 indexed itemId, string name, uint256 quantity, uint256 threshold, uint256 price, string supplier);
+    event StockIncreased(uint256 indexed itemId, uint256 amount, uint256 newQuantity);
+    event StockDecreased(uint256 indexed itemId, uint256 amount, uint256 newQuantity);
+    event LowStockDetected(uint256 indexed itemId, string name, uint256 quantity);
+    event RestockInitiated(uint256 indexed itemId, uint256 restockAmount, string supplier, uint256 totalCost);
+
+    function addItem(
+        uint256 itemId, 
+        string memory name, 
+        uint256 quantity, 
+        uint256 threshold, 
+        uint256 price, 
+        string memory supplier
+    ) public {
+        inventory[itemId] = Item(name, quantity, threshold, price, supplier);
+        emit ItemAdded(itemId, name, quantity, threshold, price, supplier);
+    }
+
+    function increaseStock(uint256 itemId, uint256 amount) public {
+        inventory[itemId].quantity += amount;
+        emit StockIncreased(itemId, amount, inventory[itemId].quantity);
+    }
+
+    function decreaseStock(uint256 itemId, uint256 amount) public {
+        require(inventory[itemId].quantity >= amount, "Not enough stock available.");
+        inventory[itemId].quantity -= amount;
+        emit StockDecreased(itemId, amount, inventory[itemId].quantity);
+
+        if (inventory[itemId].quantity < inventory[itemId].threshold) {
+            emit LowStockDetected(itemId, inventory[itemId].name, inventory[itemId].quantity);
         }
     }
 
-    // Decrement stock when a payment is received
-    function decrementStock(uint256 productId, uint256 quantity) public {
-        require(stockLevels[productId] >= quantity, "Insufficient stock");
-        stockLevels[productId] -= quantity;
-        emit StockDecremented(productId, stockLevels[productId]);
-
-        // Check if restock is needed
-        if (stockLevels[productId] < restockThreshold) {
-            uint256 restockQuantity = 100; // Example restock amount
-            stockLevels[productId] += restockQuantity;
-            emit RestockTriggered(productId, restockQuantity);
-        }
+    function restockItem(uint256 itemId, uint256 restockAmount) public {
+        Item storage item = inventory[itemId];
+        uint256 totalCost = restockAmount * item.price;
+        item.quantity += restockAmount;
+        emit RestockInitiated(itemId, restockAmount, item.supplier, totalCost);
     }
 
-    // Function to manually trigger restock (optional)
-    function restockProduct(uint256 productId, uint256 quantity) public {
-        stockLevels[productId] += quantity;
-        emit RestockTriggered(productId, quantity);
+    function getItem(uint256 itemId) public view returns (
+        string memory, uint256, uint256, uint256, string memory
+    ) {
+        Item memory item = inventory[itemId];
+        return (item.name, item.quantity, item.threshold, item.price, item.supplier);
     }
 }
