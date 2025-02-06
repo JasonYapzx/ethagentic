@@ -80,9 +80,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
           <SidebarFooter className="border-t p-2">
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton className="w-full justify-start ml-1">
-                  <ThemeToggle className="size-4 shrink-0"/>
-                </SidebarMenuButton>
+                <ThemeToggle className="w-full justify-start px-[10px]" isHovered={isHovered} />
               </SidebarMenuItem>
               <SidebarMenuItem>
                 <SidebarMenuButton className="w-full justify-start ml-1">

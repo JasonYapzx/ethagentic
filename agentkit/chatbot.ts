@@ -190,27 +190,58 @@ async function chooseMode() {
   return "chat";
 }
 
-/**
- * Start the chatbot agent
- */
-async function main() {
-  try {
-    const { agent, config } = await initializeAgent();
-    const mode = await chooseMode();
 
-    if (mode === "chat") {
-      await runChatMode(agent, config);
-    }
-  } catch (error: any) {
-    console.error("Error:", error.message);
-    process.exit(1);
-  }
-}
+import express from "express";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 
-if (import.meta.url === import.meta.resolve('./chatbot.ts')) {
-  console.log("Starting CDP Inventory Agent...");
-  main().catch((error) => {
-    console.error("Fatal error:", error);
-    process.exit(1);
+async function startSocketServer() {
+  const { agent, config } = await initializeAgent();
+  const app = express();
+
+  //@ts-ignore
+  const httpServer = createServer(app);
+  const io = new SocketIOServer(httpServer, {
+    cors: { origin: "*" } 
+  });
+
+  io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+    socket.on("user-message", async (userInput: string) => {
+      console.log("Received user message:", userInput);
+      
+      try {
+        const stream = await agent.stream({ messages: [new HumanMessage(userInput)] }, config);
+        for await (const chunk of stream) {
+          let content: string | undefined;
+          if ("agent" in chunk) {
+            content = chunk.agent.messages[0].content;
+          } else if ("tools" in chunk) {
+            content = chunk.tools.messages[0].content;
+          }
+          if (content) {
+            socket.emit("agent-response", content);
+          }
+        }
+      } catch (err: any) {
+        console.error("Error processing message:", err.message);
+        socket.emit("agent-error", err.message);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
+  });
+
+  const PORT = process.env.PORT || 5001;
+  httpServer.listen(PORT, () => {
+    console.log(`Socket server listening on port ${PORT}`);
   });
 }
+
+startSocketServer().catch((err) => {
+  console.error("Fatal error starting socket server:", err);
+  process.exit(1);
+});
+

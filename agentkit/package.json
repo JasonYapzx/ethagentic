@@ -25,7 +25,9 @@
     "@langchain/openai": "^0.4.2",
     "dotenv": "^16.4.7",
     "ethers": "^6.13.5",
-    "nillion-sv-wrappers": "^1.0.8"
+    "express": "^4.21.2",
+    "nillion-sv-wrappers": "^1.0.8",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
