@@ -6,7 +6,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 export class RestockItemTool extends Tool {
-  name = "RestockItem";
+  name = "RestockItemTool";
   description =
     "A tool to manually restock an item by increasing its quantity in the InventoryManager contract.";
 
@@ -82,9 +82,8 @@ export class RestockItemTool extends Tool {
 }
 
 export class DecreaseStockTool extends Tool {
-  name = "DecreaseStock";
-  description =
-    `A tool to decrease the stock levels of an existing item in the InventoryManager contract. If name is provided instead of id, 
+  name = "DecreaseStockTool";
+  description = `A tool to decrease the stock levels of an existing item in the InventoryManager contract. If name is provided instead of id, 
     run query the contract to find out which to decrement`;
 
   // Single top-level input (JSON string), transform to string | undefined
@@ -158,7 +157,7 @@ export class DecreaseStockTool extends Tool {
 }
 
 export class GraphStockAggregationQueryTool extends Tool {
-  name = "GraphQuery";
+  name = "GraphStockAggregationQueryTool";
   description =
     "A tool to query The Graph subgraph for time-series and aggregated usage data. " +
     "Takes one optional input: a JSON string with a 'query' field. " +
@@ -174,21 +173,21 @@ export class GraphStockAggregationQueryTool extends Tool {
 
   // The default query if user doesn't provide one
   private defaultQuery = `
-      {
-  stockDecreasedDatas {
-    id
-    itemId
-    newQuantity
-    amount
-    timestamp
-  }
-  stockDecreasedAggregations(interval: hour) {
-    id
-    itemId
-    totalAmount
-    timestamp
-  }
-}
+    {
+        stockDecreasedDatas {
+            id
+            itemId
+            newQuantity
+            amount
+            timestamp
+        }
+        stockDecreasedAggregations(interval: hour, orderBy: timestamp, orderDirection: desc) {
+            id
+            itemId
+            totalAmount
+            timestamp
+        }
+    }
     `;
 
   async _call(input: string | undefined): Promise<string> {
@@ -239,7 +238,7 @@ export class GraphStockAggregationQueryTool extends Tool {
 }
 
 export class GraphSupplierLeadTimeQueryTool extends Tool {
-  name = "SupplierLeadTimeQuery";
+  name = "GraphSupplierLeadTimeQueryTool";
   description =
     "A tool to query The Graph subgraph for supplier lead times. " +
     "Takes one optional input: a JSON string with a 'query' field. " +
@@ -307,7 +306,10 @@ export class GraphSupplierLeadTimeQueryTool extends Tool {
 export class DefaultGraphQueryTool extends Tool {
   name = "DefaultGraphQuery";
   description =
-    "A tool to query The Graph subgraph for the top 5 suppliers and itemAddeds by default. " +
+    "A tool to query The Graph subgraph for the top 5 suppliers, the items in the inventory and the threshold amounts." +
+    "Querying this will give the supplier's id, name, totalOrders, totalAmountSpent" +
+    "items id, itemId, name, quantity" +
+    " itemsAdded(initial amounts) id, itemId, name, quantity, threshold" +
     "Takes one optional input: a JSON string with a 'query' field. " +
     "If not provided, it uses a default query with 'suppliers(first: 5)' and 'itemAddeds(first: 5)'.";
 
@@ -320,20 +322,27 @@ export class DefaultGraphQueryTool extends Tool {
 
   // The default GraphQL query
   private defaultQuery = `
-      {
-        suppliers(first: 5) {
-          id
-          name
-          totalOrders
-          totalAmountSpent
-        }
+   {
+    suppliers(first: 5) {
+        id
+        name
+        totalOrders
+        totalAmountSpent
+    }
+    items(first: 5) {
+        id
+        itemId
+        name
+        quantity
+    }
         itemAddeds(first: 5) {
-          id
-          itemId
-          name
-          quantity
-        }
-      }
+        id
+        itemId
+        name
+        quantity
+        threshold
+  }
+}
     `;
 
   async _call(input: string | undefined): Promise<string> {
