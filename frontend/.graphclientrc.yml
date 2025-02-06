@@ -10,4 +10,5 @@ documents:
   - ./graphql/GetSuppliers.gql
   - ./graphql/GetItems.gql
   - ./graphql/GetStockDecreasedAggregationDay.gql
-  - ./graphql/GetStockIncreasedAggregationHour.gql
+  - ./graphql/GetStockDecreasedAggregationHour.gql
+  - ./graphql/GetStockDecreasedData.gql

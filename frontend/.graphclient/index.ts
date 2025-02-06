@@ -1752,9 +1752,11 @@ const merger = new(BareMerger as any)({
         store: rootStore.child('bareMerger')
       })
 const documentHashMap = {
-        "4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8": GetItemsDocument,
-"aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b": GetItemsAddedDocument,
+        "aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b": GetItemsAddedDocument,
 "5bf1278df2b57459667104832283eb2941ebf7ea1f568cfa8794fd729fbafa9e": GetStockDecreasedAggregationDayDocument,
+"4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8": GetItemsDocument,
+"5bfaea4a801068cf43260a96f8442d0a94f24d52e4d1eb71a3a61ff03638d3d1": GetStockDecreasedAggregationHourDocument,
+"e859cf84be2e4a9e8327f29fc59b3e557a8d2d693edb2c5a95889e9e0e3f689b": GetStockDecreasedDataDocument,
 "237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5": GetSupplierByNameDocument,
 "7faf2d24365c99158dac9c02a1df242091334cb09dcda75f2b5ab514812419c0": GetSuppliersDocument
       }
@@ -1778,13 +1780,6 @@ additionalEnvelopPlugins.push(usePersistedOperations({
     get documents() {
       return [
       {
-        document: GetItemsDocument,
-        get rawSDL() {
-          return printWithCache(GetItemsDocument);
-        },
-        location: 'GetItemsDocument.graphql',
-        sha256Hash: '4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8'
-      },{
         document: GetItemsAddedDocument,
         get rawSDL() {
           return printWithCache(GetItemsAddedDocument);
@@ -1798,6 +1793,27 @@ additionalEnvelopPlugins.push(usePersistedOperations({
         },
         location: 'GetStockDecreasedAggregationDayDocument.graphql',
         sha256Hash: '5bf1278df2b57459667104832283eb2941ebf7ea1f568cfa8794fd729fbafa9e'
+      },{
+        document: GetItemsDocument,
+        get rawSDL() {
+          return printWithCache(GetItemsDocument);
+        },
+        location: 'GetItemsDocument.graphql',
+        sha256Hash: '4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8'
+      },{
+        document: GetStockDecreasedAggregationHourDocument,
+        get rawSDL() {
+          return printWithCache(GetStockDecreasedAggregationHourDocument);
+        },
+        location: 'GetStockDecreasedAggregationHourDocument.graphql',
+        sha256Hash: '5bfaea4a801068cf43260a96f8442d0a94f24d52e4d1eb71a3a61ff03638d3d1'
+      },{
+        document: GetStockDecreasedDataDocument,
+        get rawSDL() {
+          return printWithCache(GetStockDecreasedDataDocument);
+        },
+        location: 'GetStockDecreasedDataDocument.graphql',
+        sha256Hash: 'e859cf84be2e4a9e8327f29fc59b3e557a8d2d693edb2c5a95889e9e0e3f689b'
       },{
         document: GetSupplierByNameDocument,
         get rawSDL() {
@@ -1886,6 +1902,18 @@ export type GetStockDecreasedAggregationDayQueryVariables = Exact<{
 
 export type GetStockDecreasedAggregationDayQuery = { stockDecreasedAggregations: Array<Pick<StockDecreasedAggregation, 'id' | 'itemId' | 'totalAmount' | 'timestamp'>> };
 
+export type GetStockDecreasedAggregationHourQueryVariables = Exact<{
+  timestamp_gte: Scalars['Timestamp']['input'];
+}>;
+
+
+export type GetStockDecreasedAggregationHourQuery = { stockDecreasedAggregations: Array<Pick<StockDecreasedAggregation, 'id' | 'itemId' | 'totalAmount' | 'timestamp'>> };
+
+export type GetStockDecreasedDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetStockDecreasedDataQuery = { stockDecreasedDatas: Array<Pick<StockDecreasedData, 'amount' | 'timestamp' | 'itemId'>> };
+
 export type GetSupplierByNameQueryVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
@@ -1937,6 +1965,28 @@ export const GetStockDecreasedAggregationDayDocument = gql`
   }
 }
     ` as unknown as DocumentNode<GetStockDecreasedAggregationDayQuery, GetStockDecreasedAggregationDayQueryVariables>;
+export const GetStockDecreasedAggregationHourDocument = gql`
+    query GetStockDecreasedAggregationHour($timestamp_gte: Timestamp!) {
+  stockDecreasedAggregations(
+    interval: hour
+    where: {timestamp_gte: $timestamp_gte}
+  ) {
+    id
+    itemId
+    totalAmount
+    timestamp
+  }
+}
+    ` as unknown as DocumentNode<GetStockDecreasedAggregationHourQuery, GetStockDecreasedAggregationHourQueryVariables>;
+export const GetStockDecreasedDataDocument = gql`
+    query GetStockDecreasedData {
+  stockDecreasedDatas(orderBy: timestamp, orderDirection: desc) {
+    amount
+    timestamp
+    itemId
+  }
+}
+    ` as unknown as DocumentNode<GetStockDecreasedDataQuery, GetStockDecreasedDataQueryVariables>;
 export const GetSupplierByNameDocument = gql`
     query GetSupplierByName($name: String!) {
   SupplierSearch(text: $name) {
@@ -1964,6 +2014,8 @@ export const GetSuppliersDocument = gql`
 
 
 
+
+
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
@@ -1975,6 +2027,12 @@ export function getSdk<C, E>(requester: Requester<C, E>) {
     },
     GetStockDecreasedAggregationDay(variables: GetStockDecreasedAggregationDayQueryVariables, options?: C): Promise<GetStockDecreasedAggregationDayQuery> {
       return requester<GetStockDecreasedAggregationDayQuery, GetStockDecreasedAggregationDayQueryVariables>(GetStockDecreasedAggregationDayDocument, variables, options) as Promise<GetStockDecreasedAggregationDayQuery>;
+    },
+    GetStockDecreasedAggregationHour(variables: GetStockDecreasedAggregationHourQueryVariables, options?: C): Promise<GetStockDecreasedAggregationHourQuery> {
+      return requester<GetStockDecreasedAggregationHourQuery, GetStockDecreasedAggregationHourQueryVariables>(GetStockDecreasedAggregationHourDocument, variables, options) as Promise<GetStockDecreasedAggregationHourQuery>;
+    },
+    GetStockDecreasedData(variables?: GetStockDecreasedDataQueryVariables, options?: C): Promise<GetStockDecreasedDataQuery> {
+      return requester<GetStockDecreasedDataQuery, GetStockDecreasedDataQueryVariables>(GetStockDecreasedDataDocument, variables, options) as Promise<GetStockDecreasedDataQuery>;
     },
     GetSupplierByName(variables: GetSupplierByNameQueryVariables, options?: C): Promise<GetSupplierByNameQuery> {
       return requester<GetSupplierByNameQuery, GetSupplierByNameQueryVariables>(GetSupplierByNameDocument, variables, options) as Promise<GetSupplierByNameQuery>;

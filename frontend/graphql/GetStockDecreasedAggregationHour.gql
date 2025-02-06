@@ -1,4 +1,4 @@
-query GetStockDecreasedAggregationDay($timestamp_gte: Timestamp!) {
+query GetStockDecreasedAggregationHour($timestamp_gte: Timestamp!) {
   stockDecreasedAggregations(
     interval: hour
     where: { timestamp_gte: $timestamp_gte }

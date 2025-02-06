@@ -2,6 +2,8 @@
   "4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8": "query GetItems {\n  items {\n    itemId\n    name\n    price\n    quantity\n    threshold\n    supplier {\n      name\n      avgDeliveryTime\n    }\n  }\n}",
   "aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b": "query GetItemsAdded {\n  itemAddeds {\n    id\n    itemId\n    name\n    quantity\n  }\n}",
   "5bf1278df2b57459667104832283eb2941ebf7ea1f568cfa8794fd729fbafa9e": "query GetStockDecreasedAggregationDay($timestamp_gte: Timestamp!) {\n  stockDecreasedAggregations(\n    interval: day\n    where: {timestamp_gte: $timestamp_gte}\n  ) {\n    id\n    itemId\n    totalAmount\n    timestamp\n  }\n}",
+  "5bfaea4a801068cf43260a96f8442d0a94f24d52e4d1eb71a3a61ff03638d3d1": "query GetStockDecreasedAggregationHour($timestamp_gte: Timestamp!) {\n  stockDecreasedAggregations(\n    interval: hour\n    where: {timestamp_gte: $timestamp_gte}\n  ) {\n    id\n    itemId\n    totalAmount\n    timestamp\n  }\n}",
+  "e859cf84be2e4a9e8327f29fc59b3e557a8d2d693edb2c5a95889e9e0e3f689b": "query GetStockDecreasedData {\n  stockDecreasedDatas(orderBy: timestamp, orderDirection: desc) {\n    amount\n    timestamp\n    itemId\n  }\n}",
   "237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5": "query GetSupplierByName($name: String!) {\n  SupplierSearch(text: $name) {\n    id\n    name\n    totalAmountSpent\n    totalOrders\n    avgDeliveryTime\n  }\n}",
   "7faf2d24365c99158dac9c02a1df242091334cb09dcda75f2b5ab514812419c0": "query GetSuppliers {\n  suppliers {\n    id\n    name\n    totalOrders\n    totalAmountSpent\n  }\n}"
 }
