@@ -47,12 +47,9 @@ function validateEnvironment() {
 validateEnvironment();
 
 // Nillion Schema IDs
-const API_KEY_SCHEMA_ID = '3c810f05-74b9-4c4d-846d-081c1045564e';
-const collection = new SecretVaultWrapper(
-  orgConfig.nodes,
-  orgConfig.orgCredentials,
-  API_KEY_SCHEMA_ID
-);
+const API_KEY_SCHEMA_ID: string = '3c810f05-74b9-4c4d-846d-081c1045564e';
+//@ts-ignore
+const collection = new SecretVaultWrapper(orgConfig.nodes, orgConfig.orgCredentials, API_KEY_SCHEMA_ID);
 await collection.init();
 const decryptedCollectionData = await collection.readFromNodes({});
 const { _id, CDP_API_KEY_NAME, CDP_API_KEY_PRIVATE_KEY, OPENAI_API_KEY, CONTRACT_ADDRESS } = decryptedCollectionData[0];
