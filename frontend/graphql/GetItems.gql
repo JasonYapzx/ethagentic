@@ -1,0 +1,13 @@
+query GetItems {
+  items {
+    itemId
+    name
+    price
+    quantity
+    threshold
+    supplier {
+      name
+      avgDeliveryTime
+    }
+  }
+}

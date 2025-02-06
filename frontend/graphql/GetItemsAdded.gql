@@ -1,0 +1,8 @@
+query GetItemsAdded {
+  itemAddeds {
+    id
+    itemId
+    name
+    quantity
+  }
+}
