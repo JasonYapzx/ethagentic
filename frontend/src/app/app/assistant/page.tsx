@@ -157,34 +157,6 @@ const ChatPage: React.FC = () => {
       );
     }
   };
-  // const formatMessage = (message: Message) => {
-  //   return (
-  //     <ReactMarkdown
-  //       className={`prose ${
-  //         theme === "dark" ? "prose-invert text-white" : "text-gray-900"
-  //       }`}
-  //       components={{
-  //         h1: ({ node, ...props }) => (
-  //           <h1 className="text-lg font-bold my-2" {...props} />
-  //         ),
-  //         h2: ({ node, ...props }) => (
-  //           <h2 className="text-base font-semibold my-1" {...props} />
-  //         ),
-  //         p: ({ node, ...props }) => (
-  //           <p className="my-1 leading-normal" {...props} />
-  //         ),
-  //         ul: ({ node, ...props }) => (
-  //           <ul className="list-disc ml-4 my-1" {...props} />
-  //         ),
-  //         li: ({ node, ...props }) => (
-  //           <li className="my-0.5" {...props} />
-  //         ),
-  //       }}
-  //     >
-  //       {message.text}
-  //     </ReactMarkdown>
-  //   );
-  // };
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -212,7 +184,7 @@ const ChatPage: React.FC = () => {
                   >
                     {msg.isUser ? (
                       <div className="text-sm font-semibold">
-                        <User className="w-5 h-5" />
+                        <User className={`w-5 h-5 ${theme === "dark" ? "text-white": "text-black"} `}/>
                       </div>
                     ) : (
                       <Bot className="w-5 h-5" />
@@ -227,7 +199,6 @@ const ChatPage: React.FC = () => {
                   >
                     <div className="break-words whitespace-pre-wrap">
                       {formatMessage(msg)}
-                      {/* {msg.text} */}
                       {msg.isStreaming && (
                         <span className="animate-pulse">▊</span>
                       )}
@@ -242,7 +213,7 @@ const ChatPage: React.FC = () => {
       </div>
       <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background to-background/80 p-6">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-gray-800 rounded-lg px-4 py-3 border border-gray-700">
+          <div className="rounded-lg px-4 py-3 border border-gray-700">
             <div className="relative flex items-center gap-2">
               <Textarea
                 ref={textareaRef}
@@ -250,7 +221,7 @@ const ChatPage: React.FC = () => {
                 placeholder="What would you like to check?"
                 onChange={handleInputChange}
                 onKeyDown={handleKeyDown}
-                className="flex-1 px-3 py-2 text-base bg-gray-900 text-white border-none rounded-md focus:outline-none focus:ring-0 resize-none"
+                className="flex-1 px-3 py-2 text-base text-white border-none rounded-md focus:outline-none focus:ring-0 resize-none"
                 rows={1}
               />
               <Button
@@ -269,10 +240,10 @@ const ChatPage: React.FC = () => {
             <div className="mt-3 flex justify-start">
               <Button
                 onClick={handleShowAnalysis}
-                className={`flex items-center gap-2 px-2 py-1 rounded-lg transition ${
+                className={`flex items-center gap-2 px-2 rounded-lg transition ${
                   showAnalysis
                     ? "bg-blue-500 text-white hover:bg-blue-400"
-                    : "bg-gray-800 text-gray-500 hover:bg-gray-700 hover:text-white"
+                    : ""
                 }`}
               >
                 <Activity
