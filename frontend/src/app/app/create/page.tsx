@@ -17,18 +17,18 @@ import { Toaster, toast } from "react-hot-toast";
 
 dotenv.config();
 
-export default function InventoryDashboard() {
-  const [decreaseItemId, setDecreaseItemId] = useState("");
-  const [decreaseAmount, setDecreaseAmount] = useState("");
-
-  const [restockItemId, setRestockItemId] = useState("");
-  const [restockAmount, setRestockAmount] = useState("");
+export default function CreateInventoryPage() {
+  const [itemId, setItemId] = useState("");
+  const [name, setName] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [threshold, setThreshold] = useState("");
+  const [price, setPrice] = useState("");
+  const [supplier, setSupplier] = useState("");
 
   const [loading, setLoading] = useState(false);
 
   const contractABI = [
-    "function decreaseStock(uint256 itemId, uint256 amount) public",
-    "function restockItem(uint256 itemId, uint256 restockAmount) public",
+    "function addItem(uint256 itemId, string name, uint256 quantity, uint256 threshold, uint256 price, string supplier) public",
   ];
 
   const getContract = () => {
@@ -66,97 +66,77 @@ export default function InventoryDashboard() {
     }
   };
 
-  const decreaseStockInContract = () => {
+  const addItemToContract = () => {
     const contract = getContract();
     handleTransaction(
-      contract.decreaseStock(
-        Number.parseInt(decreaseItemId),
-        Number.parseInt(decreaseAmount)
+      contract.addItem(
+        Number.parseInt(itemId),
+        name,
+        Number.parseInt(quantity),
+        Number.parseInt(threshold),
+        Number.parseInt(price),
+        supplier
       ),
-      "Stock decreased successfully!"
-    );
-  };
-
-  const restockItemInContract = () => {
-    const contract = getContract();
-    handleTransaction(
-      contract.restockItem(
-        Number.parseInt(restockItemId),
-        Number.parseInt(restockAmount)
-      ),
-      "Item restocked successfully!"
+      "Item added successfully!"
     );
   };
 
   return (
     <div className="container mx-auto p-4">
-      <Section id="inventory-management" title="Inventory Management Dashboard">
+      <Section id="inventory-management" title="Create Inventory">
         <div className="flex flex-col space-y-6">
           <Card>
             <CardHeader>
               <div className="flex gap-2 items-center">
-                <CardTitle>Decrease Stock</CardTitle>
-                <TrendingDown />
+                <CardTitle>Add New Item</CardTitle>
+                <ShoppingBasket />
               </div>{" "}
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
                 <Input
                   placeholder="Item ID"
-                  value={decreaseItemId}
-                  onChange={(e) => setDecreaseItemId(e.target.value)}
+                  value={itemId}
+                  onChange={(e) => setItemId(e.target.value)}
                   type="number"
                 />
                 <Input
-                  placeholder="Amount to Decrease"
-                  value={decreaseAmount}
-                  onChange={(e) => setDecreaseAmount(e.target.value)}
+                  placeholder="Name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <Input
+                  placeholder="Quantity"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
                   type="number"
                 />
+                <Input
+                  placeholder="Threshold"
+                  value={threshold}
+                  onChange={(e) => setThreshold(e.target.value)}
+                  type="number"
+                />
+                <Input
+                  placeholder="Price(in cents)"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  type="number"
+                />
+                <Input
+                  placeholder="Supplier"
+                  value={supplier}
+                  onChange={(e) => setSupplier(e.target.value)}
+                />
                 <Button
-                  onClick={decreaseStockInContract}
+                  onClick={addItemToContract}
                   disabled={loading}
                   className="w-full"
                 >
                   {loading ? (
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   ) : null}
-                  Decrease Stock
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <div className="flex gap-2 items-center">
-                <CardTitle>Restock Item</CardTitle>
-                <ShoppingCart />
-              </div>{" "}
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                <Input
-                  placeholder="Item ID"
-                  value={restockItemId}
-                  onChange={(e) => setRestockItemId(e.target.value)}
-                  type="number"
-                />
-                <Input
-                  placeholder="Restock Amount"
-                  value={restockAmount}
-                  onChange={(e) => setRestockAmount(e.target.value)}
-                  type="number"
-                />
-                <Button
-                  onClick={restockItemInContract}
-                  disabled={loading}
-                  className="w-full"
-                >
-                  {loading ? (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  ) : null}
-                  Restock Item
+                  Add Item
                 </Button>
               </div>
             </CardContent>

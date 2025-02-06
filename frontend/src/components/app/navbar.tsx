@@ -68,21 +68,23 @@ export function NavBar({ children }: { children: React.ReactNode }) {
           <SidebarContent className="p-2 overflow-hidden">
             <SidebarMenu>
               <SidebarMenuItem>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2"
-                  size="sm"
-                >
-                  <Plus className="size-4 shrink-0" />
-                  <span
-                    className={cn(
-                      "ml-2 transition-opacity duration-300",
-                      isHovered ? "opacity-100" : "opacity-0"
-                    )}
+                <a href="/app/create">
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start gap-2"
+                    size="sm"
                   >
-                    Create
-                  </span>
-                </Button>
+                    <Plus className="size-4 shrink-0" />
+                    <span
+                      className={cn(
+                        "ml-2 transition-opacity duration-300",
+                        isHovered ? "opacity-100" : "opacity-0"
+                      )}
+                    >
+                      Create
+                    </span>
+                  </Button>
+                </a>
               </SidebarMenuItem>
               {AppNavBar.map((item) => (
                 <a
