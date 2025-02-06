@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
-export function ThemeToggle({ className, children }: { className?: string, children?: React.ReactNode }) {
+export function ThemeToggle({ className, children, isHovered }: { className?: string, children?: React.ReactNode, isHovered: boolean }) {
   const { setTheme, theme } = useTheme();
   return (
     <Button
@@ -16,7 +16,7 @@ export function ThemeToggle({ className, children }: { className?: string, child
     >
       <Sun className="h-[1.5rem] w-[1.3rem] dark:hidden" />
       <Moon className="hidden h-5 w-5 dark:block" />
-      <span className="sr-only">Toggle theme</span>
+      <span className={isHovered ? "opacity-100" : "opacity-0"}>Toggle theme</span>
     </Button>
   );
 }
