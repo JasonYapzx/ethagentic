@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "ts-node ./chatbot.ts",
+    "start": "npx tsx ./chatbot.ts",
     "dev": "nodemon ./chatbot.ts",
     "lint": "eslint -c .eslintrc.json *.ts",
     "lint-fix": "eslint -c .eslintrc.json *.ts --fix",

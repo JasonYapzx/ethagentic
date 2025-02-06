@@ -13,7 +13,7 @@ import {
   GraphStockAggregationQueryTool,
   GraphSupplierLeadTimeQueryTool,
   DefaultGraphQueryTool,
-} from "./tools.ts";
+} from "./tools";
 
 dotenv.config();
 
@@ -47,6 +47,7 @@ validateEnvironment();
 // Store agent wallet data
 const WALLET_DATA_FILE = "wallet_data.txt";
 
+const restockItemTool = new RestockItemTool();
 const decreaseStockTool = new DecreaseStockTool();
 const graphStockAggregationQueryTool = new GraphStockAggregationQueryTool();
 const graphSupplierLeadTimeQueryTool = new GraphSupplierLeadTimeQueryTool();
@@ -73,6 +74,7 @@ async function initializeAgent() {
     const cdpToolkit = new CdpToolkit(agentkit);
     const tools = cdpToolkit.getTools();
 
+    tools.push(restockItemTool)
     tools.push(decreaseStockTool);
     tools.push(graphStockAggregationQueryTool);
     tools.push(graphSupplierLeadTimeQueryTool);
