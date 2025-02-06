@@ -17,7 +17,7 @@ import {
 import { SecretVaultWrapper } from 'nillion-sv-wrappers';
 import { orgConfig } from './nillionOrgConfig';
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 /**
  * Validate required environment variables
