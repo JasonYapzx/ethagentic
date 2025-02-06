@@ -1,0 +1,52 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "API Keys",
+    "type": "array",
+    "items": {
+      "type": "object",
+      "properties": {
+        "_id": {
+          "type": "string",
+          "format": "uuid",
+          "coerce": true
+        },
+        "CDP_API_KEY_NAME": {
+          "type": "object",
+          "properties": {
+            "$share": {
+              "type": "string"
+            }
+          },
+          "required": ["$share"]
+        },
+        "CDP_API_KEY_PRIVATE_KEY": {
+          "type": "object",
+          "properties": {
+            "$share": {
+              "type": "string"
+            }
+          },
+          "required": ["$share"]
+        },
+        "OPENAI_API_KEY": {
+          "type": "object",
+          "properties": {
+            "$share": {
+              "type": "string"
+            }
+          },
+          "required": ["$share"]
+        },
+        "CONTRACT_ADDRESS": {
+          "type": "object",
+          "properties": {
+            "$share": {
+              "type": "string"
+            }
+          },
+          "required": ["$share"]
+        }
+      },
+      "required": ["_id", "CDP_API_KEY_NAME", "CDP_API_KEY_PRIVATE_KEY", "OPENAI_API_KEY", "CONTRACT_ADDRESS"]
+    }
+  }

@@ -1,0 +1,18 @@
+{
+  "name": "frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "install:all": "npm i --prefix frontend && npm i --prefix agentkit",
+    "build:frontend": "npm run build --prefix frontend",
+    "start:frontend": "npm start --prefix frontend",
+    "start:agentkit": "cd agentkit && npx tsx ./chatbot.ts",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:agentkit\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.2"
+  },
+  "dependencies": {
+    "next": "^14.2.23"
+  }
+}

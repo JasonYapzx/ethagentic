@@ -1,6 +1,17 @@
 {
+  "name": "storagent-kit",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "license": "AGPL-version-3.0",
+  "private": false,
+  "engines": {
+    "node": ">= 14.0.0",
+    "npm": ">= 6.0.0"
+  },
   "scripts": {
-    "start": "ts-node ./chatbot.ts",
+    "start": "npx tsx ./chatbot.ts",
     "dev": "nodemon ./chatbot.ts",
     "lint": "eslint -c .eslintrc.json *.ts",
     "lint-fix": "eslint -c .eslintrc.json *.ts --fix",
@@ -13,7 +24,10 @@
     "@langchain/langgraph": "^0.2.44",
     "@langchain/openai": "^0.4.2",
     "dotenv": "^16.4.7",
-    "ethers": "^6.13.5"
+    "ethers": "^6.13.5",
+    "express": "^4.21.2",
+    "nillion-sv-wrappers": "^1.0.8",
+    "socket.io": "^4.8.1"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

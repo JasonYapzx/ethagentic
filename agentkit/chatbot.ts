@@ -4,14 +4,20 @@ import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
-import { ethers } from "ethers";
 import dotenv from "dotenv";
-import { Tool } from "@langchain/core/tools";
 import fs from "fs";
-import { z } from "zod";
 import readline from "readline";
+import {
+  RestockItemTool,
+  DecreaseStockTool,
+  GraphStockAggregationQueryTool,
+  GraphSupplierLeadTimeQueryTool,
+  DefaultGraphQueryTool,
+} from "./tools";
+import { SecretVaultWrapper } from 'nillion-sv-wrappers';
+import { orgConfig } from './nillionOrgConfig';
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 /**
  * Validate required environment variables
@@ -40,164 +46,22 @@ function validateEnvironment() {
 
 validateEnvironment();
 
+// Nillion Schema IDs
+const API_KEY_SCHEMA_ID: string = '3c810f05-74b9-4c4d-846d-081c1045564e';
+//@ts-ignore
+const collection = new SecretVaultWrapper(orgConfig.nodes, orgConfig.orgCredentials, API_KEY_SCHEMA_ID);
+await collection.init();
+const decryptedCollectionData = await collection.readFromNodes({});
+const { _id, CDP_API_KEY_NAME, CDP_API_KEY_PRIVATE_KEY, OPENAI_API_KEY, CONTRACT_ADDRESS } = decryptedCollectionData[0];
+
 // Store agent wallet data
 const WALLET_DATA_FILE = "wallet_data.txt";
 
-class DecrementStockTool extends Tool {
-    name = "DecrementStock";
-    description = "A tool to decrement stock levels of a product after a purchase.";
-  
-    /**
-     * 1) Single top-level `input` field
-     * 2) Transform to (string | undefined)
-     */
-    schema = z
-      .object({
-        input: z.string().optional(),
-      })
-      .transform(({ input }) => input);
-  
-    /**
-     * The `_call()` method's argument is the **transformed** type:
-     *    (string | undefined)
-     */
-    async _call(input: string | undefined): Promise<string> {
-      if (!input) {
-        return `Error: No input provided. Provide a JSON string with { "productId": "...", "quantity": ... }.`;
-      }
-  
-      let productId: string | number;
-      let quantity: number;
-  
-      // 1. Parse the JSON from the user-provided string
-      try {
-        const parsed = JSON.parse(input);
-        productId = parsed.productId;
-        quantity = parsed.quantity;
-      } catch (err) {
-        return `Error: Invalid JSON in input. ${err}`;
-      }
-  
-      // 2. Validate productId & quantity
-      if (productId === undefined || quantity === undefined) {
-        return `Error: Missing productId or quantity in parsed JSON. Received: ${input}`;
-      }
-  
-      // Convert productId to a number if needed
-      const numProductId = parseInt(productId as string, 10);
-      if (isNaN(numProductId)) {
-        return `Error: productId ("${productId}") is not a valid number.`;
-      }
-  
-      // 3. Run your ethers logic
-      try {
-        const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
-        const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-        const contractAddress = process.env.CONTRACT_ADDRESS!;
-  
-        const contractABI = [
-          "function decrementStock(uint256 productId, uint256 quantity) public",
-          "function stockLevels(uint256 productId) public view returns (uint256)",
-        ];
-  
-        const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-  
-        // Check stock levels
-        const currentStock = await contract.stockLevels(numProductId);
-        if (currentStock < quantity) {
-          return `Error: Not enough stock. Current stock: ${currentStock}`;
-        }
-  
-        // Execute transaction
-        const tx = await contract.decrementStock(numProductId, quantity);
-        await tx.wait();
-  
-        const newStock = await contract.stockLevels(numProductId);
-        return `Transaction successful! Stock for product ${numProductId} is now ${newStock}.`;
-      } catch (error: any) {
-        return `Transaction failed: ${error.message}`;
-      }
-    }
-  }
-
-const decrementStockTool = new DecrementStockTool();
-
-
-export class RestockProductTool extends Tool {
-  name = "RestockProduct";
-  description =
-    "A tool to manually restock a product by increasing its stock quantity.";
-
-  /**
-   * 1) Single top-level `input` field
-   * 2) Transform to (string | undefined) to match the Tool's expected type
-   */
-  schema = z
-    .object({
-      input: z.string().optional(),
-    })
-    .transform(({ input }) => input);
-
-  /**
-   * The `_call()` method receives (string | undefined)
-   * from the transformed schema above.
-   */
-  async _call(input: string | undefined): Promise<string> {
-    // Check if JSON input was provided
-    if (!input) {
-      return `Error: No input provided. Provide a JSON string with { "productId": "...", "quantity": ... }.`;
-    }
-
-    let productId: string | number;
-    let quantity: number;
-
-    // 1. Parse the JSON from the user-provided string
-    try {
-      const parsed = JSON.parse(input);
-      productId = parsed.productId;
-      quantity = parsed.quantity;
-    } catch (err) {
-      return `Error: Invalid JSON in input. ${err}`;
-    }
-
-    // 2. Validate productId & quantity
-    if (productId === undefined || quantity === undefined) {
-      return `Error: Missing productId or quantity in parsed JSON. Received: ${input}`;
-    }
-
-    // Convert productId to a number if needed
-    const numProductId = parseInt(productId as string, 10);
-    if (isNaN(numProductId)) {
-      return `Error: productId ("${productId}") is not a valid number.`;
-    }
-
-    // 3. Run your ethers logic to call restockProduct
-    try {
-      const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
-      const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-      const contractAddress = process.env.CONTRACT_ADDRESS!;
-
-      const contractABI = [
-        "function restockProduct(uint256 productId, uint256 quantity) public",
-        "function stockLevels(uint256 productId) public view returns (uint256)",
-      ];
-
-      const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-
-      // Execute transaction
-      const tx = await contract.restockProduct(numProductId, quantity);
-      await tx.wait();
-
-      // Check new stock level
-      const newStock = await contract.stockLevels(numProductId);
-      return `Transaction successful! Stock for product ${numProductId} is now ${newStock}.`;
-    } catch (error: any) {
-      return `Transaction failed: ${error.message}`;
-    }
-  }
-}
-
-const incrementStockTool = new RestockProductTool();
+const restockItemTool = new RestockItemTool(CONTRACT_ADDRESS);
+const decreaseStockTool = new DecreaseStockTool(CONTRACT_ADDRESS);
+const graphStockAggregationQueryTool = new GraphStockAggregationQueryTool();
+const graphSupplierLeadTimeQueryTool = new GraphSupplierLeadTimeQueryTool();
+const defaultGraphQueryTool = new DefaultGraphQueryTool();
 
 /**
  * Initialize the CDP AgentKit
@@ -220,8 +84,11 @@ async function initializeAgent() {
     const cdpToolkit = new CdpToolkit(agentkit);
     const tools = cdpToolkit.getTools();
 
-    tools.push(decrementStockTool);
-    tools.push(incrementStockTool);
+    tools.push(restockItemTool)
+    tools.push(decreaseStockTool);
+    tools.push(graphStockAggregationQueryTool);
+    tools.push(graphSupplierLeadTimeQueryTool);
+    tools.push(defaultGraphQueryTool);
 
     const memory = new MemorySaver();
     const agentConfig = { configurable: { thread_id: "CDP Inventory Bot" } };
@@ -231,18 +98,35 @@ async function initializeAgent() {
       tools,
       checkpointSaver: memory,
       messageModifier: `
-        You are an AI-powered inventory assistant using Coinbase CDP AgentKit.
-        Your primary functions:
-        - **Track inventory**: Monitor product stock levels.
-        - **Decrement stock**: Process sales and update stock.
-        - **Handle blockchain transactions**: Execute on-chain stock updates.
-
-        Example:
-        User: "Sell 3 units of product 5."
-        You: "Transaction successful! Stock for product 5 is now 12."
-
-        How can I assist you? 🛒.
-      `,
+      You are an AI-powered inventory assistant that helps manage restocking decisions using on-chain data and supplier information.
+    
+      ### **Your Process for Restocking**
+      1️⃣ **Monitor Stock Usage**  
+         - Use the **GraphStockAggregationQueryTool** to check the most recent stock decrease for an item.  
+         - Look at recent usage trends to see if restocking is needed.
+         - You should restock if the stock level is below the threshold and the usage trend shows multiple decreases.
+    
+      2️⃣ **Check Current Stock Levels**  
+         - Use the contract to check **current stock quantity** and **threshold**. Threshold can be found in the itemsAdded list in the Graph Query Tool 
+         - If stock is **above the threshold**, **DO NOT restock**.  
+    
+      3️⃣ **Find the Best Supplier**  
+         - Use the **GraphSupplierLeadTimeQueryTool** to get supplier lead times.  
+         - Select the **fastest** supplier. If multiple suppliers have the same delivery time, break ties randomly.  
+    
+      4️⃣ **Make a Restock Decision**  
+         - If stock is below threshold, suggest the **best supplier**.  
+         - Ask the user for confirmation before restocking.  
+    
+      5️⃣ **(Optional) Automatically Restock**  
+         - If the user agrees, execute a restock using **RestockItemTool**.  
+    
+      ### **Example Conversation**
+      **User:** "Check if Item 3 needs restocking."  
+      **AI:** "Item 3 has dropped below its threshold. The best supplier is FreshFoods Inc. with a delivery time of 24 hours. Proceed with restock?"  
+    
+      Always follow this process when asked about restocking.
+    `
     });
 
     const exportedWallet = await agentkit.exportWallet();
@@ -306,27 +190,58 @@ async function chooseMode() {
   return "chat";
 }
 
-/**
- * Start the chatbot agent
- */
-async function main() {
-  try {
-    const { agent, config } = await initializeAgent();
-    const mode = await chooseMode();
 
-    if (mode === "chat") {
-      await runChatMode(agent, config);
-    }
-  } catch (error: any) {
-    console.error("Error:", error.message);
-    process.exit(1);
-  }
-}
+import express from "express";
+import { createServer } from "http";
+import { Server as SocketIOServer } from "socket.io";
 
-if (require.main === module) {
-  console.log("Starting CDP Inventory Agent...");
-  main().catch((error) => {
-    console.error("Fatal error:", error);
-    process.exit(1);
+async function startSocketServer() {
+  const { agent, config } = await initializeAgent();
+  const app = express();
+
+  //@ts-ignore
+  const httpServer = createServer(app);
+  const io = new SocketIOServer(httpServer, {
+    cors: { origin: "*" } 
+  });
+
+  io.on("connection", (socket) => {
+    console.log("Client connected:", socket.id);
+    socket.on("user-message", async (userInput: string) => {
+      console.log("Received user message:", userInput);
+      
+      try {
+        const stream = await agent.stream({ messages: [new HumanMessage(userInput)] }, config);
+        for await (const chunk of stream) {
+          let content: string | undefined;
+          if ("agent" in chunk) {
+            content = chunk.agent.messages[0].content;
+          } else if ("tools" in chunk) {
+            content = chunk.tools.messages[0].content;
+          }
+          if (content) {
+            socket.emit("agent-response", content);
+          }
+        }
+      } catch (err: any) {
+        console.error("Error processing message:", err.message);
+        socket.emit("agent-error", err.message);
+      }
+    });
+
+    socket.on("disconnect", () => {
+      console.log("Client disconnected:", socket.id);
+    });
+  });
+
+  const PORT = process.env.PORT || 5001;
+  httpServer.listen(PORT, () => {
+    console.log(`Socket server listening on port ${PORT}`);
   });
 }
+
+startSocketServer().catch((err) => {
+  console.error("Fatal error starting socket server:", err);
+  process.exit(1);
+});
+
