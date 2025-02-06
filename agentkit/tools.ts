@@ -10,6 +10,12 @@ export class RestockItemTool extends Tool {
   description =
     "A tool to manually restock an item by increasing its quantity in the InventoryManager contract.";
 
+  private contract_address: string;
+  constructor(contract_address: string) {
+    super();
+    this.contract_address = contract_address;
+  }
+
   // Single top-level input -> transform to (string | undefined)
   schema = z
     .object({
@@ -53,7 +59,7 @@ export class RestockItemTool extends Tool {
       // 3. Connect to the contract
       const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
       const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-      const contractAddress = process.env.CONTRACT_ADDRESS!;
+      const contractAddress = this.contract_address;
 
       const contractABI = [
         "function restockItem(uint256 itemId, uint256 restockAmount) public",
@@ -85,6 +91,12 @@ export class DecreaseStockTool extends Tool {
   name = "DecreaseStockTool";
   description = `A tool to decrease the stock levels of an existing item in the InventoryManager contract. If name is provided instead of id, 
     run query the contract to find out which to decrement`;
+
+  private contract_address: string;
+  constructor(contract_address: string) {
+    super();
+    this.contract_address = contract_address;
+  }
 
   // Single top-level input (JSON string), transform to string | undefined
   schema = z
@@ -129,7 +141,7 @@ export class DecreaseStockTool extends Tool {
       // 3. Connect to the contract
       const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
       const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-      const contractAddress = process.env.CONTRACT_ADDRESS!;
+      const contractAddress = this.contract_address;
 
       const contractABI = [
         "function decreaseStock(uint256 itemId, uint256 amount) public",

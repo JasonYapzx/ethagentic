@@ -14,6 +14,8 @@ import {
   GraphSupplierLeadTimeQueryTool,
   DefaultGraphQueryTool,
 } from "./tools";
+import { SecretVaultWrapper } from 'nillion-sv-wrappers';
+import { orgConfig } from './nillionOrgConfig';
 
 dotenv.config();
 
@@ -44,11 +46,22 @@ function validateEnvironment() {
 
 validateEnvironment();
 
+// Nillion Schema IDs
+const API_KEY_SCHEMA_ID = '3c810f05-74b9-4c4d-846d-081c1045564e';
+const collection = new SecretVaultWrapper(
+  orgConfig.nodes,
+  orgConfig.orgCredentials,
+  API_KEY_SCHEMA_ID
+);
+await collection.init();
+const decryptedCollectionData = await collection.readFromNodes({});
+const { _id, CDP_API_KEY_NAME, CDP_API_KEY_PRIVATE_KEY, OPENAI_API_KEY, CONTRACT_ADDRESS } = decryptedCollectionData[0];
+
 // Store agent wallet data
 const WALLET_DATA_FILE = "wallet_data.txt";
 
-const restockItemTool = new RestockItemTool();
-const decreaseStockTool = new DecreaseStockTool();
+const restockItemTool = new RestockItemTool(CONTRACT_ADDRESS);
+const decreaseStockTool = new DecreaseStockTool(CONTRACT_ADDRESS);
 const graphStockAggregationQueryTool = new GraphStockAggregationQueryTool();
 const graphSupplierLeadTimeQueryTool = new GraphSupplierLeadTimeQueryTool();
 const defaultGraphQueryTool = new DefaultGraphQueryTool();
@@ -197,7 +210,7 @@ async function main() {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === import.meta.resolve('./chatbot.ts')) {
   console.log("Starting CDP Inventory Agent...");
   main().catch((error) => {
     console.error("Fatal error:", error);
