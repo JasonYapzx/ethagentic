@@ -1,0 +1,11 @@
+query GetStockDecreasedAggregationDay($timestamp_gte: Timestamp!) {
+  stockDecreasedAggregations(
+    interval: day
+    where: { timestamp_gte: $timestamp_gte }
+  ) {
+    id
+    itemId
+    totalAmount
+    timestamp
+  }
+}

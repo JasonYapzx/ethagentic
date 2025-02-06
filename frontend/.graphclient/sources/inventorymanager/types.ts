@@ -39,6 +39,16 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Item = {
+  id: Scalars['String']['output'];
+  itemId: Scalars['BigInt']['output'];
+  name: Scalars['String']['output'];
+  quantity: Scalars['BigInt']['output'];
+  threshold: Scalars['BigInt']['output'];
+  price: Scalars['BigInt']['output'];
+  supplier: Supplier;
+};
+
 export type ItemAdded = {
   id: Scalars['Bytes']['output'];
   itemId: Scalars['BigInt']['output'];
@@ -179,6 +189,120 @@ export type ItemAdded_orderBy =
   | 'blockTimestamp'
   | 'transactionHash';
 
+export type Item_filter = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  id_not?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_ends_with?: InputMaybe<Scalars['String']['input']>;
+  id_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  id_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  itemId?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_not?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  itemId_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  quantity?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_not?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  quantity_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  threshold?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_not?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  threshold_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  price?: InputMaybe<Scalars['BigInt']['input']>;
+  price_not?: InputMaybe<Scalars['BigInt']['input']>;
+  price_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  price_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  price_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  price_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  price_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  price_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  supplier?: InputMaybe<Scalars['String']['input']>;
+  supplier_not?: InputMaybe<Scalars['String']['input']>;
+  supplier_gt?: InputMaybe<Scalars['String']['input']>;
+  supplier_lt?: InputMaybe<Scalars['String']['input']>;
+  supplier_gte?: InputMaybe<Scalars['String']['input']>;
+  supplier_lte?: InputMaybe<Scalars['String']['input']>;
+  supplier_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  supplier_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  supplier_contains?: InputMaybe<Scalars['String']['input']>;
+  supplier_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_contains?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_starts_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_ends_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_?: InputMaybe<Supplier_filter>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<Item_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<Item_filter>>>;
+};
+
+export type Item_orderBy =
+  | 'id'
+  | 'itemId'
+  | 'name'
+  | 'quantity'
+  | 'threshold'
+  | 'price'
+  | 'supplier'
+  | 'supplier__id'
+  | 'supplier__name'
+  | 'supplier__totalOrders'
+  | 'supplier__totalAmountSpent'
+  | 'supplier__avgDeliveryTime';
+
 export type LowStockDetected = {
   id: Scalars['Bytes']['output'];
   itemId: Scalars['BigInt']['output'];
@@ -285,6 +409,8 @@ export type OrderDirection =
 export type Query = {
   supplier?: Maybe<Supplier>;
   suppliers: Array<Supplier>;
+  item?: Maybe<Item>;
+  items: Array<Item>;
   itemAdded?: Maybe<ItemAdded>;
   itemAddeds: Array<ItemAdded>;
   lowStockDetected?: Maybe<LowStockDetected>;
@@ -318,6 +444,24 @@ export type QuerysuppliersArgs = {
   orderBy?: InputMaybe<Supplier_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Supplier_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryitemArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryitemsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Item_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<Item_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -832,6 +976,8 @@ export type StockIncreased_orderBy =
 export type Subscription = {
   supplier?: Maybe<Supplier>;
   suppliers: Array<Supplier>;
+  item?: Maybe<Item>;
+  items: Array<Item>;
   itemAdded?: Maybe<ItemAdded>;
   itemAddeds: Array<ItemAdded>;
   lowStockDetected?: Maybe<LowStockDetected>;
@@ -864,6 +1010,24 @@ export type SubscriptionsuppliersArgs = {
   orderBy?: InputMaybe<Supplier_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Supplier_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionitemArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionitemsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Item_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<Item_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -1116,6 +1280,10 @@ export type _SubgraphErrorPolicy_ =
   /** null **/
   suppliers: InContextSdkMethod<Query['suppliers'], QuerysuppliersArgs, MeshContext>,
   /** null **/
+  item: InContextSdkMethod<Query['item'], QueryitemArgs, MeshContext>,
+  /** null **/
+  items: InContextSdkMethod<Query['items'], QueryitemsArgs, MeshContext>,
+  /** null **/
   itemAdded: InContextSdkMethod<Query['itemAdded'], QueryitemAddedArgs, MeshContext>,
   /** null **/
   itemAddeds: InContextSdkMethod<Query['itemAddeds'], QueryitemAddedsArgs, MeshContext>,
@@ -1156,6 +1324,10 @@ export type _SubgraphErrorPolicy_ =
   supplier: InContextSdkMethod<Subscription['supplier'], SubscriptionsupplierArgs, MeshContext>,
   /** null **/
   suppliers: InContextSdkMethod<Subscription['suppliers'], SubscriptionsuppliersArgs, MeshContext>,
+  /** null **/
+  item: InContextSdkMethod<Subscription['item'], SubscriptionitemArgs, MeshContext>,
+  /** null **/
+  items: InContextSdkMethod<Subscription['items'], SubscriptionitemsArgs, MeshContext>,
   /** null **/
   itemAdded: InContextSdkMethod<Subscription['itemAdded'], SubscriptionitemAddedArgs, MeshContext>,
   /** null **/

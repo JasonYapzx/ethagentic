@@ -7,3 +7,7 @@ sources:
 documents:
   - ./graphql/GetSupplierByName.gql
   - ./graphql/GetItemsAdded.gql
+  - ./graphql/GetSuppliers.gql
+  - ./graphql/GetItems.gql
+  - ./graphql/GetStockDecreasedAggregationDay.gql
+  - ./graphql/GetStockIncreasedAggregationHour.gql

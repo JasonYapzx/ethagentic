@@ -62,6 +62,16 @@ export type Block_height = {
   number_gte?: InputMaybe<Scalars['Int']['input']>;
 };
 
+export type Item = {
+  id: Scalars['String']['output'];
+  itemId: Scalars['BigInt']['output'];
+  name: Scalars['String']['output'];
+  quantity: Scalars['BigInt']['output'];
+  threshold: Scalars['BigInt']['output'];
+  price: Scalars['BigInt']['output'];
+  supplier: Supplier;
+};
+
 export type ItemAdded = {
   id: Scalars['Bytes']['output'];
   itemId: Scalars['BigInt']['output'];
@@ -202,6 +212,120 @@ export type ItemAdded_orderBy =
   | 'blockTimestamp'
   | 'transactionHash';
 
+export type Item_filter = {
+  id?: InputMaybe<Scalars['String']['input']>;
+  id_not?: InputMaybe<Scalars['String']['input']>;
+  id_gt?: InputMaybe<Scalars['String']['input']>;
+  id_lt?: InputMaybe<Scalars['String']['input']>;
+  id_gte?: InputMaybe<Scalars['String']['input']>;
+  id_lte?: InputMaybe<Scalars['String']['input']>;
+  id_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  id_contains?: InputMaybe<Scalars['String']['input']>;
+  id_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains?: InputMaybe<Scalars['String']['input']>;
+  id_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  id_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_ends_with?: InputMaybe<Scalars['String']['input']>;
+  id_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  id_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  id_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  itemId?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_not?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  itemId_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  itemId_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  name_not?: InputMaybe<Scalars['String']['input']>;
+  name_gt?: InputMaybe<Scalars['String']['input']>;
+  name_lt?: InputMaybe<Scalars['String']['input']>;
+  name_gte?: InputMaybe<Scalars['String']['input']>;
+  name_lte?: InputMaybe<Scalars['String']['input']>;
+  name_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  name_contains?: InputMaybe<Scalars['String']['input']>;
+  name_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains?: InputMaybe<Scalars['String']['input']>;
+  name_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  name_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  quantity?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_not?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  quantity_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  quantity_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  threshold?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_not?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  threshold_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  threshold_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  price?: InputMaybe<Scalars['BigInt']['input']>;
+  price_not?: InputMaybe<Scalars['BigInt']['input']>;
+  price_gt?: InputMaybe<Scalars['BigInt']['input']>;
+  price_lt?: InputMaybe<Scalars['BigInt']['input']>;
+  price_gte?: InputMaybe<Scalars['BigInt']['input']>;
+  price_lte?: InputMaybe<Scalars['BigInt']['input']>;
+  price_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  price_not_in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  supplier?: InputMaybe<Scalars['String']['input']>;
+  supplier_not?: InputMaybe<Scalars['String']['input']>;
+  supplier_gt?: InputMaybe<Scalars['String']['input']>;
+  supplier_lt?: InputMaybe<Scalars['String']['input']>;
+  supplier_gte?: InputMaybe<Scalars['String']['input']>;
+  supplier_lte?: InputMaybe<Scalars['String']['input']>;
+  supplier_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  supplier_not_in?: InputMaybe<Array<Scalars['String']['input']>>;
+  supplier_contains?: InputMaybe<Scalars['String']['input']>;
+  supplier_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_contains?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_contains_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_starts_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_starts_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_starts_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_ends_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_ends_with?: InputMaybe<Scalars['String']['input']>;
+  supplier_not_ends_with_nocase?: InputMaybe<Scalars['String']['input']>;
+  supplier_?: InputMaybe<Supplier_filter>;
+  /** Filter for the block changed event. */
+  _change_block?: InputMaybe<BlockChangedFilter>;
+  and?: InputMaybe<Array<InputMaybe<Item_filter>>>;
+  or?: InputMaybe<Array<InputMaybe<Item_filter>>>;
+};
+
+export type Item_orderBy =
+  | 'id'
+  | 'itemId'
+  | 'name'
+  | 'quantity'
+  | 'threshold'
+  | 'price'
+  | 'supplier'
+  | 'supplier__id'
+  | 'supplier__name'
+  | 'supplier__totalOrders'
+  | 'supplier__totalAmountSpent'
+  | 'supplier__avgDeliveryTime';
+
 export type LowStockDetected = {
   id: Scalars['Bytes']['output'];
   itemId: Scalars['BigInt']['output'];
@@ -308,6 +432,8 @@ export type OrderDirection =
 export type Query = {
   supplier?: Maybe<Supplier>;
   suppliers: Array<Supplier>;
+  item?: Maybe<Item>;
+  items: Array<Item>;
   itemAdded?: Maybe<ItemAdded>;
   itemAddeds: Array<ItemAdded>;
   lowStockDetected?: Maybe<LowStockDetected>;
@@ -341,6 +467,24 @@ export type QuerysuppliersArgs = {
   orderBy?: InputMaybe<Supplier_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Supplier_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryitemArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type QueryitemsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Item_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<Item_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -855,6 +999,8 @@ export type StockIncreased_orderBy =
 export type Subscription = {
   supplier?: Maybe<Supplier>;
   suppliers: Array<Supplier>;
+  item?: Maybe<Item>;
+  items: Array<Item>;
   itemAdded?: Maybe<ItemAdded>;
   itemAddeds: Array<ItemAdded>;
   lowStockDetected?: Maybe<LowStockDetected>;
@@ -887,6 +1033,24 @@ export type SubscriptionsuppliersArgs = {
   orderBy?: InputMaybe<Supplier_orderBy>;
   orderDirection?: InputMaybe<OrderDirection>;
   where?: InputMaybe<Supplier_filter>;
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionitemArgs = {
+  id: Scalars['ID']['input'];
+  block?: InputMaybe<Block_height>;
+  subgraphError?: _SubgraphErrorPolicy_;
+};
+
+
+export type SubscriptionitemsArgs = {
+  skip?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Item_orderBy>;
+  orderDirection?: InputMaybe<OrderDirection>;
+  where?: InputMaybe<Item_filter>;
   block?: InputMaybe<Block_height>;
   subgraphError?: _SubgraphErrorPolicy_;
 };
@@ -1230,9 +1394,12 @@ export type ResolversTypes = ResolversObject<{
   ID: ResolverTypeWrapper<Scalars['ID']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Int8: ResolverTypeWrapper<Scalars['Int8']['output']>;
+  Item: ResolverTypeWrapper<Item>;
   ItemAdded: ResolverTypeWrapper<ItemAdded>;
   ItemAdded_filter: ItemAdded_filter;
   ItemAdded_orderBy: ItemAdded_orderBy;
+  Item_filter: Item_filter;
+  Item_orderBy: Item_orderBy;
   LowStockDetected: ResolverTypeWrapper<LowStockDetected>;
   LowStockDetected_filter: LowStockDetected_filter;
   LowStockDetected_orderBy: LowStockDetected_orderBy;
@@ -1275,8 +1442,10 @@ export type ResolversParentTypes = ResolversObject<{
   ID: Scalars['ID']['output'];
   Int: Scalars['Int']['output'];
   Int8: Scalars['Int8']['output'];
+  Item: Item;
   ItemAdded: ItemAdded;
   ItemAdded_filter: ItemAdded_filter;
+  Item_filter: Item_filter;
   LowStockDetected: LowStockDetected;
   LowStockDetected_filter: LowStockDetected_filter;
   Query: {};
@@ -1331,6 +1500,17 @@ export interface Int8ScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
   name: 'Int8';
 }
 
+export type ItemResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Item'] = ResolversParentTypes['Item']> = ResolversObject<{
+  id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  itemId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  quantity?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  threshold?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
+  supplier?: Resolver<ResolversTypes['Supplier'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type ItemAddedResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['ItemAdded'] = ResolversParentTypes['ItemAdded']> = ResolversObject<{
   id?: Resolver<ResolversTypes['Bytes'], ParentType, ContextType>;
   itemId?: Resolver<ResolversTypes['BigInt'], ParentType, ContextType>;
@@ -1359,6 +1539,8 @@ export type LowStockDetectedResolvers<ContextType = MeshContext, ParentType exte
 export type QueryResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   supplier?: Resolver<Maybe<ResolversTypes['Supplier']>, ParentType, ContextType, RequireFields<QuerysupplierArgs, 'id' | 'subgraphError'>>;
   suppliers?: Resolver<Array<ResolversTypes['Supplier']>, ParentType, ContextType, RequireFields<QuerysuppliersArgs, 'skip' | 'first' | 'subgraphError'>>;
+  item?: Resolver<Maybe<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryitemArgs, 'id' | 'subgraphError'>>;
+  items?: Resolver<Array<ResolversTypes['Item']>, ParentType, ContextType, RequireFields<QueryitemsArgs, 'skip' | 'first' | 'subgraphError'>>;
   itemAdded?: Resolver<Maybe<ResolversTypes['ItemAdded']>, ParentType, ContextType, RequireFields<QueryitemAddedArgs, 'id' | 'subgraphError'>>;
   itemAddeds?: Resolver<Array<ResolversTypes['ItemAdded']>, ParentType, ContextType, RequireFields<QueryitemAddedsArgs, 'skip' | 'first' | 'subgraphError'>>;
   lowStockDetected?: Resolver<Maybe<ResolversTypes['LowStockDetected']>, ParentType, ContextType, RequireFields<QuerylowStockDetectedArgs, 'id' | 'subgraphError'>>;
@@ -1430,6 +1612,8 @@ export type StockIncreasedResolvers<ContextType = MeshContext, ParentType extend
 export type SubscriptionResolvers<ContextType = MeshContext, ParentType extends ResolversParentTypes['Subscription'] = ResolversParentTypes['Subscription']> = ResolversObject<{
   supplier?: SubscriptionResolver<Maybe<ResolversTypes['Supplier']>, "supplier", ParentType, ContextType, RequireFields<SubscriptionsupplierArgs, 'id' | 'subgraphError'>>;
   suppliers?: SubscriptionResolver<Array<ResolversTypes['Supplier']>, "suppliers", ParentType, ContextType, RequireFields<SubscriptionsuppliersArgs, 'skip' | 'first' | 'subgraphError'>>;
+  item?: SubscriptionResolver<Maybe<ResolversTypes['Item']>, "item", ParentType, ContextType, RequireFields<SubscriptionitemArgs, 'id' | 'subgraphError'>>;
+  items?: SubscriptionResolver<Array<ResolversTypes['Item']>, "items", ParentType, ContextType, RequireFields<SubscriptionitemsArgs, 'skip' | 'first' | 'subgraphError'>>;
   itemAdded?: SubscriptionResolver<Maybe<ResolversTypes['ItemAdded']>, "itemAdded", ParentType, ContextType, RequireFields<SubscriptionitemAddedArgs, 'id' | 'subgraphError'>>;
   itemAddeds?: SubscriptionResolver<Array<ResolversTypes['ItemAdded']>, "itemAddeds", ParentType, ContextType, RequireFields<SubscriptionitemAddedsArgs, 'skip' | 'first' | 'subgraphError'>>;
   lowStockDetected?: SubscriptionResolver<Maybe<ResolversTypes['LowStockDetected']>, "lowStockDetected", ParentType, ContextType, RequireFields<SubscriptionlowStockDetectedArgs, 'id' | 'subgraphError'>>;
@@ -1479,6 +1663,7 @@ export type Resolvers<ContextType = MeshContext> = ResolversObject<{
   BigInt?: GraphQLScalarType;
   Bytes?: GraphQLScalarType;
   Int8?: GraphQLScalarType;
+  Item?: ItemResolvers<ContextType>;
   ItemAdded?: ItemAddedResolvers<ContextType>;
   LowStockDetected?: LowStockDetectedResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
@@ -1567,8 +1752,11 @@ const merger = new(BareMerger as any)({
         store: rootStore.child('bareMerger')
       })
 const documentHashMap = {
-        "237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5": GetSupplierByNameDocument,
-"aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b": GetItemsAddedDocument
+        "4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8": GetItemsDocument,
+"aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b": GetItemsAddedDocument,
+"5bf1278df2b57459667104832283eb2941ebf7ea1f568cfa8794fd729fbafa9e": GetStockDecreasedAggregationDayDocument,
+"237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5": GetSupplierByNameDocument,
+"7faf2d24365c99158dac9c02a1df242091334cb09dcda75f2b5ab514812419c0": GetSuppliersDocument
       }
 additionalEnvelopPlugins.push(usePersistedOperations({
         getPersistedOperation(key) {
@@ -1590,12 +1778,12 @@ additionalEnvelopPlugins.push(usePersistedOperations({
     get documents() {
       return [
       {
-        document: GetSupplierByNameDocument,
+        document: GetItemsDocument,
         get rawSDL() {
-          return printWithCache(GetSupplierByNameDocument);
+          return printWithCache(GetItemsDocument);
         },
-        location: 'GetSupplierByNameDocument.graphql',
-        sha256Hash: '237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5'
+        location: 'GetItemsDocument.graphql',
+        sha256Hash: '4e430c6a51ff34983ae9d25042af0514f92e3f6cbb4c1d1217b81c77e2d6cdf8'
       },{
         document: GetItemsAddedDocument,
         get rawSDL() {
@@ -1603,6 +1791,27 @@ additionalEnvelopPlugins.push(usePersistedOperations({
         },
         location: 'GetItemsAddedDocument.graphql',
         sha256Hash: 'aabddab70a8ef8cd4eeefc15e075eaa2a383cad6742a52ede987871121af6d2b'
+      },{
+        document: GetStockDecreasedAggregationDayDocument,
+        get rawSDL() {
+          return printWithCache(GetStockDecreasedAggregationDayDocument);
+        },
+        location: 'GetStockDecreasedAggregationDayDocument.graphql',
+        sha256Hash: '5bf1278df2b57459667104832283eb2941ebf7ea1f568cfa8794fd729fbafa9e'
+      },{
+        document: GetSupplierByNameDocument,
+        get rawSDL() {
+          return printWithCache(GetSupplierByNameDocument);
+        },
+        location: 'GetSupplierByNameDocument.graphql',
+        sha256Hash: '237423fb8ff411af0da61b7d559a9ec4fc1acc93994822e92798f682ce1822c5'
+      },{
+        document: GetSuppliersDocument,
+        get rawSDL() {
+          return printWithCache(GetSuppliersDocument);
+        },
+        location: 'GetSuppliersDocument.graphql',
+        sha256Hash: '7faf2d24365c99158dac9c02a1df242091334cb09dcda75f2b5ab514812419c0'
       }
     ];
     },
@@ -1657,10 +1866,25 @@ export function getBuiltGraphSDK<TGlobalContext = any, TOperationContext = any>(
   const sdkRequester$ = getBuiltGraphClient().then(({ sdkRequesterFactory }) => sdkRequesterFactory(globalContext));
   return getSdk<TOperationContext, TGlobalContext>((...args) => sdkRequester$.then(sdkRequester => sdkRequester(...args)));
 }
+export type GetItemsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetItemsQuery = { items: Array<(
+    Pick<Item, 'itemId' | 'name' | 'price' | 'quantity' | 'threshold'>
+    & { supplier: Pick<Supplier, 'name' | 'avgDeliveryTime'> }
+  )> };
+
 export type GetItemsAddedQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetItemsAddedQuery = { itemAddeds: Array<Pick<ItemAdded, 'id' | 'itemId' | 'name' | 'quantity'>> };
+
+export type GetStockDecreasedAggregationDayQueryVariables = Exact<{
+  timestamp_gte: Scalars['Timestamp']['input'];
+}>;
+
+
+export type GetStockDecreasedAggregationDayQuery = { stockDecreasedAggregations: Array<Pick<StockDecreasedAggregation, 'id' | 'itemId' | 'totalAmount' | 'timestamp'>> };
 
 export type GetSupplierByNameQueryVariables = Exact<{
   name: Scalars['String']['input'];
@@ -1669,7 +1893,27 @@ export type GetSupplierByNameQueryVariables = Exact<{
 
 export type GetSupplierByNameQuery = { SupplierSearch: Array<Pick<Supplier, 'id' | 'name' | 'totalAmountSpent' | 'totalOrders' | 'avgDeliveryTime'>> };
 
+export type GetSuppliersQueryVariables = Exact<{ [key: string]: never; }>;
 
+
+export type GetSuppliersQuery = { suppliers: Array<Pick<Supplier, 'id' | 'name' | 'totalOrders' | 'totalAmountSpent'>> };
+
+
+export const GetItemsDocument = gql`
+    query GetItems {
+  items {
+    itemId
+    name
+    price
+    quantity
+    threshold
+    supplier {
+      name
+      avgDeliveryTime
+    }
+  }
+}
+    ` as unknown as DocumentNode<GetItemsQuery, GetItemsQueryVariables>;
 export const GetItemsAddedDocument = gql`
     query GetItemsAdded {
   itemAddeds {
@@ -1680,6 +1924,19 @@ export const GetItemsAddedDocument = gql`
   }
 }
     ` as unknown as DocumentNode<GetItemsAddedQuery, GetItemsAddedQueryVariables>;
+export const GetStockDecreasedAggregationDayDocument = gql`
+    query GetStockDecreasedAggregationDay($timestamp_gte: Timestamp!) {
+  stockDecreasedAggregations(
+    interval: day
+    where: {timestamp_gte: $timestamp_gte}
+  ) {
+    id
+    itemId
+    totalAmount
+    timestamp
+  }
+}
+    ` as unknown as DocumentNode<GetStockDecreasedAggregationDayQuery, GetStockDecreasedAggregationDayQueryVariables>;
 export const GetSupplierByNameDocument = gql`
     query GetSupplierByName($name: String!) {
   SupplierSearch(text: $name) {
@@ -1691,17 +1948,39 @@ export const GetSupplierByNameDocument = gql`
   }
 }
     ` as unknown as DocumentNode<GetSupplierByNameQuery, GetSupplierByNameQueryVariables>;
+export const GetSuppliersDocument = gql`
+    query GetSuppliers {
+  suppliers {
+    id
+    name
+    totalOrders
+    totalAmountSpent
+  }
+}
+    ` as unknown as DocumentNode<GetSuppliersQuery, GetSuppliersQueryVariables>;
+
+
+
 
 
 
 export type Requester<C = {}, E = unknown> = <R, V>(doc: DocumentNode, vars?: V, options?: C) => Promise<R> | AsyncIterable<R>
 export function getSdk<C, E>(requester: Requester<C, E>) {
   return {
+    GetItems(variables?: GetItemsQueryVariables, options?: C): Promise<GetItemsQuery> {
+      return requester<GetItemsQuery, GetItemsQueryVariables>(GetItemsDocument, variables, options) as Promise<GetItemsQuery>;
+    },
     GetItemsAdded(variables?: GetItemsAddedQueryVariables, options?: C): Promise<GetItemsAddedQuery> {
       return requester<GetItemsAddedQuery, GetItemsAddedQueryVariables>(GetItemsAddedDocument, variables, options) as Promise<GetItemsAddedQuery>;
     },
+    GetStockDecreasedAggregationDay(variables: GetStockDecreasedAggregationDayQueryVariables, options?: C): Promise<GetStockDecreasedAggregationDayQuery> {
+      return requester<GetStockDecreasedAggregationDayQuery, GetStockDecreasedAggregationDayQueryVariables>(GetStockDecreasedAggregationDayDocument, variables, options) as Promise<GetStockDecreasedAggregationDayQuery>;
+    },
     GetSupplierByName(variables: GetSupplierByNameQueryVariables, options?: C): Promise<GetSupplierByNameQuery> {
       return requester<GetSupplierByNameQuery, GetSupplierByNameQueryVariables>(GetSupplierByNameDocument, variables, options) as Promise<GetSupplierByNameQuery>;
+    },
+    GetSuppliers(variables?: GetSuppliersQueryVariables, options?: C): Promise<GetSuppliersQuery> {
+      return requester<GetSuppliersQuery, GetSuppliersQueryVariables>(GetSuppliersDocument, variables, options) as Promise<GetSuppliersQuery>;
     }
   };
 }
