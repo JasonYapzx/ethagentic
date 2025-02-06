@@ -5,6 +5,10 @@ import { Overview } from "@/components/app/dashboard/overview";
 import { Section } from "@/components/common/section";
 import { getBuiltGraphSDK } from "../../../.graphclient";
 import StockDecreaseHistory from "./stock-decrease-history";
+import { SupplierSearch } from "./search-supplier";
+import { LatestRestocks } from "./latest-restocks";
+import { TopSuppliers } from "@/components/app/dashboard/top-suppliers";
+import { ItemSearch } from "@/components/app/dashboard/item-search";
 
 export const revalidate = 0; // Equivalent to no-store
 
@@ -54,11 +58,12 @@ export default async function AppPage() {
             inventoryValue={inventoryValue}
             past24hrStockDecreaseValue={past24hrStockDecreaseValue}
           />
+          <TopSuppliers />
           <StockDecreaseHistory
             data={stockDecreasedData.stockDecreasedDatas}
             items={items}
           />
-
+          <LatestRestocks items={items} />
           <Card>
             <CardHeader>
               <CardTitle>Inventory Table</CardTitle>
@@ -67,6 +72,15 @@ export default async function AppPage() {
               <InventoryTable items={items} />
             </CardContent>
           </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Supplier Search</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SupplierSearch />
+            </CardContent>
+          </Card>
+          <ItemSearch />
         </div>
       </Section>
     </div>

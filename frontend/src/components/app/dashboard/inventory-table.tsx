@@ -25,8 +25,9 @@ export function InventoryTable({ items }: { items: any[] }) {
           <TableHead>Item Name</TableHead>
           <TableHead>Supplier</TableHead>
           <TableHead>Quantity</TableHead>
-          <TableHead>Threshhold</TableHead>
-          <TableHead>Price</TableHead>
+          <TableHead>Threshold</TableHead>
+          <TableHead>Price per qty</TableHead>
+          <TableHead>Total Value</TableHead>
           <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
@@ -39,6 +40,9 @@ export function InventoryTable({ items }: { items: any[] }) {
             <TableCell>{item.quantity}</TableCell>
             <TableCell>{item.threshold}</TableCell>
             <TableCell>${(item.price / 100).toFixed(2)} </TableCell>
+            <TableCell>
+              ${((item.price / 100) * item.quantity).toFixed(2)}
+            </TableCell>
             <TableCell>
               <Button size="sm">Buy Now</Button>
             </TableCell>
