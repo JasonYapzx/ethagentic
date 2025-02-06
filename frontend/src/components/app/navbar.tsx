@@ -85,28 +85,28 @@ export function NavBar({ children }: { children: React.ReactNode }) {
                 </Button>
               </SidebarMenuItem>
               {AppNavBar.map((item) => (
-                <SidebarMenuItem key={item.label}>
-                  <SidebarMenuButton
-                    isActive={pathName === item.href}
-                    className={`w-full h-full py-3 justify-start bg-background hover:bg-accent hover:text-accent-foreground ${
-                      pathName === item.href
-                        ? "bg-primary/40 text-white hover:text-white hover:bg-primary/70"
-                        : ""
-                    }`}
-                    size="sm"
-                  >
-                    <item.icon className="size-4 shrink-0 ml-[5px]" />
-                    <a
-                      className={cn(
-                        "ml-2 transition-opacity duration-300",
-                        isHovered ? "opacity-100" : "opacity-0"
-                      )}
-                      href={item.href}
+                <a
+                  className={cn(
+                    "ml-2 transition-opacity duration-300",
+                    isHovered ? "opacity-100" : "opacity-0"
+                  )}
+                  href={item.href}
+                >
+                  <SidebarMenuItem key={item.label}>
+                    <SidebarMenuButton
+                      isActive={pathName === item.href}
+                      className={`w-full h-full py-3 justify-start bg-background hover:bg-accent hover:text-accent-foreground ${
+                        pathName === item.href
+                          ? "bg-primary/40 text-white hover:text-white hover:bg-primary/70"
+                          : ""
+                      }`}
+                      size="sm"
                     >
+                      <item.icon className="size-4 shrink-0 ml-[5px]" />
                       {item.label}
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                </a>
               ))}
             </SidebarMenu>
           </SidebarContent>
