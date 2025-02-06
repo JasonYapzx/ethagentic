@@ -4,12 +4,16 @@ import { HumanMessage } from "@langchain/core/messages";
 import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
-import { ethers } from "ethers";
 import dotenv from "dotenv";
-import { Tool } from "@langchain/core/tools";
 import fs from "fs";
-import { z } from "zod";
 import readline from "readline";
+import {
+  RestockItemTool,
+  DecreaseStockTool,
+  GraphStockAggregationQueryTool,
+  GraphSupplierLeadTimeQueryTool,
+  DefaultGraphQueryTool,
+} from "./tools.ts";
 
 dotenv.config();
 
@@ -43,161 +47,10 @@ validateEnvironment();
 // Store agent wallet data
 const WALLET_DATA_FILE = "wallet_data.txt";
 
-class DecrementStockTool extends Tool {
-    name = "DecrementStock";
-    description = "A tool to decrement stock levels of a product after a purchase.";
-  
-    /**
-     * 1) Single top-level `input` field
-     * 2) Transform to (string | undefined)
-     */
-    schema = z
-      .object({
-        input: z.string().optional(),
-      })
-      .transform(({ input }) => input);
-  
-    /**
-     * The `_call()` method's argument is the **transformed** type:
-     *    (string | undefined)
-     */
-    async _call(input: string | undefined): Promise<string> {
-      if (!input) {
-        return `Error: No input provided. Provide a JSON string with { "productId": "...", "quantity": ... }.`;
-      }
-  
-      let productId: string | number;
-      let quantity: number;
-  
-      // 1. Parse the JSON from the user-provided string
-      try {
-        const parsed = JSON.parse(input);
-        productId = parsed.productId;
-        quantity = parsed.quantity;
-      } catch (err) {
-        return `Error: Invalid JSON in input. ${err}`;
-      }
-  
-      // 2. Validate productId & quantity
-      if (productId === undefined || quantity === undefined) {
-        return `Error: Missing productId or quantity in parsed JSON. Received: ${input}`;
-      }
-  
-      // Convert productId to a number if needed
-      const numProductId = parseInt(productId as string, 10);
-      if (isNaN(numProductId)) {
-        return `Error: productId ("${productId}") is not a valid number.`;
-      }
-  
-      // 3. Run your ethers logic
-      try {
-        const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
-        const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-        const contractAddress = process.env.CONTRACT_ADDRESS!;
-  
-        const contractABI = [
-          "function decrementStock(uint256 productId, uint256 quantity) public",
-          "function stockLevels(uint256 productId) public view returns (uint256)",
-        ];
-  
-        const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-  
-        // Check stock levels
-        const currentStock = await contract.stockLevels(numProductId);
-        if (currentStock < quantity) {
-          return `Error: Not enough stock. Current stock: ${currentStock}`;
-        }
-  
-        // Execute transaction
-        const tx = await contract.decrementStock(numProductId, quantity);
-        await tx.wait();
-  
-        const newStock = await contract.stockLevels(numProductId);
-        return `Transaction successful! Stock for product ${numProductId} is now ${newStock}.`;
-      } catch (error: any) {
-        return `Transaction failed: ${error.message}`;
-      }
-    }
-  }
-
-const decrementStockTool = new DecrementStockTool();
-
-
-export class RestockProductTool extends Tool {
-  name = "RestockProduct";
-  description =
-    "A tool to manually restock a product by increasing its stock quantity.";
-
-  /**
-   * 1) Single top-level `input` field
-   * 2) Transform to (string | undefined) to match the Tool's expected type
-   */
-  schema = z
-    .object({
-      input: z.string().optional(),
-    })
-    .transform(({ input }) => input);
-
-  /**
-   * The `_call()` method receives (string | undefined)
-   * from the transformed schema above.
-   */
-  async _call(input: string | undefined): Promise<string> {
-    // Check if JSON input was provided
-    if (!input) {
-      return `Error: No input provided. Provide a JSON string with { "productId": "...", "quantity": ... }.`;
-    }
-
-    let productId: string | number;
-    let quantity: number;
-
-    // 1. Parse the JSON from the user-provided string
-    try {
-      const parsed = JSON.parse(input);
-      productId = parsed.productId;
-      quantity = parsed.quantity;
-    } catch (err) {
-      return `Error: Invalid JSON in input. ${err}`;
-    }
-
-    // 2. Validate productId & quantity
-    if (productId === undefined || quantity === undefined) {
-      return `Error: Missing productId or quantity in parsed JSON. Received: ${input}`;
-    }
-
-    // Convert productId to a number if needed
-    const numProductId = parseInt(productId as string, 10);
-    if (isNaN(numProductId)) {
-      return `Error: productId ("${productId}") is not a valid number.`;
-    }
-
-    // 3. Run your ethers logic to call restockProduct
-    try {
-      const provider = new ethers.JsonRpcProvider(process.env.BASE_RPC_URL);
-      const wallet = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
-      const contractAddress = process.env.CONTRACT_ADDRESS!;
-
-      const contractABI = [
-        "function restockProduct(uint256 productId, uint256 quantity) public",
-        "function stockLevels(uint256 productId) public view returns (uint256)",
-      ];
-
-      const contract = new ethers.Contract(contractAddress, contractABI, wallet);
-
-      // Execute transaction
-      const tx = await contract.restockProduct(numProductId, quantity);
-      await tx.wait();
-
-      // Check new stock level
-      const newStock = await contract.stockLevels(numProductId);
-      return `Transaction successful! Stock for product ${numProductId} is now ${newStock}.`;
-    } catch (error: any) {
-      return `Transaction failed: ${error.message}`;
-    }
-  }
-}
-
-const incrementStockTool = new RestockProductTool();
+const decreaseStockTool = new DecreaseStockTool();
+const graphStockAggregationQueryTool = new GraphStockAggregationQueryTool();
+const graphSupplierLeadTimeQueryTool = new GraphSupplierLeadTimeQueryTool();
+const defaultGraphQueryTool = new DefaultGraphQueryTool();
 
 /**
  * Initialize the CDP AgentKit
@@ -220,8 +73,10 @@ async function initializeAgent() {
     const cdpToolkit = new CdpToolkit(agentkit);
     const tools = cdpToolkit.getTools();
 
-    tools.push(decrementStockTool);
-    tools.push(incrementStockTool);
+    tools.push(decreaseStockTool);
+    tools.push(graphStockAggregationQueryTool);
+    tools.push(graphSupplierLeadTimeQueryTool);
+    tools.push(defaultGraphQueryTool);
 
     const memory = new MemorySaver();
     const agentConfig = { configurable: { thread_id: "CDP Inventory Bot" } };
@@ -231,18 +86,20 @@ async function initializeAgent() {
       tools,
       checkpointSaver: memory,
       messageModifier: `
-        You are an AI-powered inventory assistant using Coinbase CDP AgentKit.
+        You are an AI-powered inventory assistant, using Coinbase CDP AgentKit and The Graph to help manage stock levels.
+
         Your primary functions:
-        - **Track inventory**: Monitor product stock levels.
-        - **Decrement stock**: Process sales and update stock.
-        - **Handle blockchain transactions**: Execute on-chain stock updates.
+        1. Track Inventory: Monitor product stock (quantity, threshold, price, supplier).
+        2. Decrement & Restock: Process sales (decrement stock) and restock items on-chain.
+        3. Query The Graph: Fetch time-series usage data and supplier lead times (e.g., "GraphQuery" or "SupplierLeadTimeQuery" tools).
+        4. Forecast & Advise: Identify trends or low-stock situations; recommend or initiate restocks.
 
         Example:
         User: "Sell 3 units of product 5."
         You: "Transaction successful! Stock for product 5 is now 12."
 
-        How can I assist you? 🛒.
-      `,
+        How can I assist you with your inventory needs today? 🛒
+`,
     });
 
     const exportedWallet = await agentkit.exportWallet();
