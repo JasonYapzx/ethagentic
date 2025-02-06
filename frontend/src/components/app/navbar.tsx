@@ -41,7 +41,6 @@ export function NavBar({ children }: { children: React.ReactNode }) {
                   <Icons.logo className="size-4 shrink-0" />
                   <span>
                   <Image src="/images/storagent.png" alt="Storagent Logo" width={140} height={140} />
-                  {/* <StoragentLogo width={150} height={150} /> */}
                   </span>
                 </SidebarMenuButton>
                 <FlickeringGrid
