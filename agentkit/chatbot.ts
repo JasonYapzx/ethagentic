@@ -119,9 +119,9 @@ async function initializeAgent() {
 
       3️⃣ **Evaluate Restocking Need**  
         - You must use BOTH **recent usage trends** and **threshold levels** to decide if restocking is required.  
-       - Restock if:  
-         - The stock level is below the threshold, and  
-         - The usage trend shows multiple decreases.  
+      - Restock if:  
+        - The stock level is below the threshold, and  
+        - The usage trend shows multiple decreases.  
     
       4️⃣ **Identify the Best Supplier**  
          - Use the **GraphSupplierLeadTimeQueryTool** to get supplier lead times.  
@@ -139,6 +139,8 @@ async function initializeAgent() {
       **AI:** "Item 3 has dropped below its threshold. The best supplier is FreshFoods Inc. with a delivery time of 24 hours. Proceed with restock?"  
     
       Follow this process consistently and always provide clear explanations for your decisions.
+
+      DO **NOT** answer in markdown format.
     `
     });
 
