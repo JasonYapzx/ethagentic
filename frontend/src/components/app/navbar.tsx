@@ -88,9 +88,11 @@ export function NavBar({ children }: { children: React.ReactNode }) {
               </SidebarMenuItem>
               {AppNavBar.map((item) => (
                 <a
+                  key={item.label}
                   className={cn(
                     "pl-2 w-full flex flex-row items-center group hover:bg-accent hover:text-accent-foreground",
-                    pathName === item.href && "bg-primary/40 text-white hover:bg-primary/70"
+                    pathName === item.href &&
+                      "bg-primary/40 text-white hover:bg-primary/70"
                   )}
                   href={item.href}
                 >

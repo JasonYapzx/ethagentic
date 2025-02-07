@@ -8,9 +8,9 @@ dotenv.config();
 export class RestockItemTool extends Tool {
   name = "RestockItemTool";
   description =
-    "A tool to manually restock an item by increasing its quantity in the InventoryManager contract." + 
-    "This tool must be called to update the smart contract when a restock is done."
-    "If name is provided instead of id, run query the contract to find out which to restock."
+    "A tool to manually restock an item by increasing its quantity in the InventoryManager contract." +
+    "This tool must be called to update the smart contract when a restock is done.";
+  "If name is provided instead of id, run query the contract to find out which to restock.";
 
   private contract_address: string;
   constructor(contract_address: string) {
@@ -226,7 +226,6 @@ export class GraphStockAggregationQueryTool extends Tool {
     }
 
     try {
-
       await sleep(5000);
 
       const subgraphUrl =
@@ -320,7 +319,7 @@ export class DefaultGraphQueryTool extends Tool {
   name = "InventoryLevelsGraphQuery";
   description =
     "A tool to query The Graph subgraph for the top 5 suppliers, the items in the inventory and the threshold amounts." +
-    "Run this query to get the current inventory levels." + 
+    "Run this query to get the current inventory levels." +
     "Querying this will give the supplier's id, name, totalOrders, totalAmountSpent" +
     "items shows the CURRENT inventory amounts. it has id, itemId, name, quantity" +
     " itemsAdded shows the INITIAL inventory amounts. it has id, itemId, name, quantity, threshold" +
@@ -371,10 +370,9 @@ export class DefaultGraphQueryTool extends Tool {
       }
     }
 
-    
     try {
       await sleep(5000);
-      
+
       const subgraphUrl =
         process.env.SUBGRAPH_URL ||
         "https://api.thegraph.com/subgraphs/name/your-subgraph";
