@@ -16,7 +16,7 @@ export function ThemeToggle({ className, children, isHovered }: { className?: st
     >
       <Sun className="h-[1.5rem] w-[1.3rem] dark:hidden" />
       <Moon className="hidden h-5 w-5 dark:block" />
-      <span className={isHovered ? "opacity-100" : "opacity-0"}>Toggle theme</span>
+      <span className={isHovered ? "opacity-100 pl-[10px]" : "opacity-0"}>Toggle theme</span>
     </Button>
   );
 }
