@@ -15,7 +15,9 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message: "Pricing local amount received",
       localAmount,
-    });
+    },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error processing request:", error);
 
