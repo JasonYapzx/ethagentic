@@ -92,7 +92,7 @@ repository-root
 1. **Clone the Repository**
 
    ```bash
-   git clone <repository-link>
+   git clone https://github.com/eugenetayyj/ethagentic
 
    ```
 
