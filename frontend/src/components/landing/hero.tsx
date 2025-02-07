@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { lazy, Suspense, useEffect, useState } from "react";
+import WalletLogin from "../onchain-kit/wallet";
 const LazySpline = lazy(() => import("@splinetool/react-spline"));
 
 const ease = [0.16, 1, 0.3, 1];
@@ -98,16 +99,7 @@ function HeroCTA() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.8, duration: 0.8, ease }}
       >
-        <Link
-          href="/download"
-          className={cn(
-            buttonVariants({ variant: "default" }),
-            "w-full sm:w-auto text-background flex gap-2 rounded-lg"
-          )}
-        >
-          <Icons.logo className="h-6 w-6" />
-          {siteConfig.hero.cta}
-        </Link>
+        <WalletLogin text="Get Started"/>
       </motion.div>
       <motion.p
         className="mt-3 text-sm text-muted-foreground text-left"

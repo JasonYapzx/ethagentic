@@ -90,7 +90,7 @@ export default function InventoryDashboard() {
   return (
     <div className="container mx-auto p-4">
       <Section id="inventory-management" title="Inventory Management Dashboard">
-        <div className="flex flex-col space-y-6">
+        <div className="flex flex-col">
           <Card>
             <CardHeader>
               <div className="flex gap-2 items-center">
