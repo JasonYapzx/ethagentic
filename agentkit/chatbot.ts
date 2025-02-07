@@ -54,6 +54,17 @@ const collection = new SecretVaultWrapper(
   API_KEY_SCHEMA_ID
 );
 await collection.init();
+// Write to Nillion
+// const data = [
+//   {
+//     CDP_API_KEY_NAME: { $allot: process.env.CDP_API_KEY_NAME },
+//     CDP_API_KEY_PRIVATE_KEY: { $allot: process.env.CDP_API_KEY_PRIVATE_KEY },
+//     OPENAI_API_KEY: { $allot: process.env.OPENAI_API_KEY },
+//     CONTRACT_ADDRESS: { $allot: process.env.CONTRACT_ADDRESS }
+//   }
+// ];
+// const dataWritten = await collection.writeToNodes(data);
+
 const decryptedCollectionData = await collection.readFromNodes({});
 const {
   _id,
@@ -61,7 +72,7 @@ const {
   CDP_API_KEY_PRIVATE_KEY,
   OPENAI_API_KEY,
   CONTRACT_ADDRESS,
-} = decryptedCollectionData[0];
+} = decryptedCollectionData[1];
 
 // Store agent wallet data
 const WALLET_DATA_FILE = "wallet_data.txt";
