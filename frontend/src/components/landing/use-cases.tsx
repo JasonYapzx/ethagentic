@@ -181,8 +181,8 @@ const Card2 = () => {
     {
       id: 1,
       type: "info",
-      timestamp: "2023-12-15 14:23:45",
-      message: "Agent initialized. Starting task execution.",
+      timestamp: "2024-01-15 14:23:45",
+      message: "Stock level monitoring initiated.",
       icon: (
         <div className="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center">
           <InfoIcon className="h-5 w-5 text-white" />
@@ -192,8 +192,8 @@ const Card2 = () => {
     {
       id: 2,
       type: "action",
-      timestamp: "2023-12-15 14:23:47",
-      message: "Retrieving data from external API...",
+      timestamp: "2024-01-15 14:23:47",
+      message: "Analyzing inventory trends...",
       icon: (
         <div className="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center">
           <DatabaseIcon className="h-5 w-5 text-white" />
@@ -203,8 +203,8 @@ const Card2 = () => {
     {
       id: 3,
       type: "decision",
-      timestamp: "2023-12-15 14:23:50",
-      message: "Analyzing data. Confidence: 85%",
+      timestamp: "2024-01-15 14:23:50",
+      message: "Restock recommended. Stock below threshold.",
       icon: (
         <div className="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center">
           <BrainCircuitIcon className="h-5 w-5 text-white" />
@@ -214,8 +214,8 @@ const Card2 = () => {
     {
       id: 4,
       type: "warning",
-      timestamp: "2023-12-15 14:23:52",
-      message: "Potential anomaly detected in dataset.",
+      timestamp: "2024-01-15 14:23:52",
+      message: "Unusual demand spike detected.",
       icon: (
         <div className="h-8 w-8 rounded-full bg-yellow-500 flex items-center justify-center">
           <AlertTriangleIcon className="h-5 w-5 text-white" />
@@ -224,9 +224,9 @@ const Card2 = () => {
     },
     {
       id: 5,
-      type: "error",
-      timestamp: "2023-12-15 14:23:55",
-      message: "Failed to connect to secondary database.",
+      type: "success",
+      timestamp: "2024-01-15 14:23:55",
+      message: "Automatic reorder processed successfully.",
       icon: (
         <div className="h-8 w-8 rounded-full bg-red-500 flex items-center justify-center">
           <XCircleIcon className="h-5 w-5 text-white" />
@@ -290,11 +290,10 @@ const Card2 = () => {
         </div>
         <div className="flex flex-col gap-y-1 px-5 pb-4 items-start w-full">
           <h2 className="font-semibold tracking-tight text-lg">
-            Monitor agent activity
+            Real-time Monitoring
           </h2>
           <p className="text-sm text-muted-foreground">
-            Track and analyze your AI agent performance with detailed activity
-            logs.
+            Track inventory levels, analyze trends, and automate restocking decisions.
           </p>
         </div>
       </motion.div>
@@ -338,10 +337,10 @@ const Card3 = () => {
         </div>
         <div className="flex flex-col gap-y-1 px-5 pb-4 items-start w-full">
           <h2 className="font-semibold tracking-tight text-lg">
-            Build once, run anywhere
+            Seamless Integration
           </h2>
           <p className="text-sm text-muted-foreground">
-            Create AI agents that work seamlessly across different platforms.
+            Connect with suppliers, smart contracts, and existing inventory systems effortlessly.
           </p>
         </div>
       </div>

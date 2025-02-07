@@ -45,7 +45,7 @@
 
   - Used for securely storing private data. Nillion is a secure computation network that decentralizes trust for high-value and sensitive data.
 
-- **Playwright**:
+- **Browser-Use**:
 
   - Automates item purchases from suppliers.
 
@@ -83,7 +83,7 @@ repository-root
 ├── frontend # Frontend application (Next.js)
 ├── agentkit # AI logic and chatbot functionality (CDP Agent Kit)
 ├── contract # Smart contracts for inventory management
-├── (to be added) playwright-scripts # Automation scripts for supplier interactions
+├── scripts/browser_use_bot # Automation scripts for supplier interactions
 
 ---
 
@@ -123,3 +123,25 @@ repository-root
 - Add Playwright scripts for supplier interaction.
 - Expand consumer purchase flow for enhanced user experience.
 - Explore additional Nillion use cases for advanced privacy solutions.
+
+## The Graph Implementations
+The Graph Schema is in frontend > .graphclient
+
+### Subgraph Development
+- Simple event tracking entities like `graph init`.
+- Domain entities like Accounts, Tokens, etc., properly filled.
+- Best practices applied like getOrCreate, Bytes as IDs, immutable entities, etc.
+- Published to The Graph Network.
+- Aggregations implemented.
+- Full-text search included.
+- Schema best practices applied (Enums, Interfaces, Fragments).
+
+### Query The Graph
+- Simple queries to The Graph.
+- Used Graph Client.
+- Used sorting and/or filtering.
+- Used large pagination.
+- Used logical operators.
+- Used a better GraphQL library like Apollo or URQL.
+- Used GraphQL variables.
+- Used The Graph Network.

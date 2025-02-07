@@ -20,11 +20,19 @@ import { AppNavBar } from "@/lib/config";
 import { ThemeToggle } from "../common/theme-toggle";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
+import { useCallback } from "react";
+import { useDisconnect } from 'wagmi';
+
 // import StoragentLogo from "../../public/images/storagent.png";
 
 export function NavBar({ children }: { children: React.ReactNode }) {
   const [isHovered, setIsHovered] = React.useState(false);
   const pathName = usePathname();
+
+  const { disconnect, connectors } = useDisconnect();
+  const handleDisconnect = useCallback(() => {
+    connectors.map((connector: any) => disconnect({ connector }));
+  }, [disconnect, connectors]);
 
   return (
     <SidebarProvider>
@@ -88,9 +96,11 @@ export function NavBar({ children }: { children: React.ReactNode }) {
               </SidebarMenuItem>
               {AppNavBar.map((item) => (
                 <a
+                  key={item.label}
                   className={cn(
                     "pl-2 w-full flex flex-row items-center group hover:bg-accent hover:text-accent-foreground",
-                    pathName === item.href && "bg-primary/40 text-white hover:bg-primary/70"
+                    pathName === item.href &&
+                      "bg-primary/40 text-white hover:bg-primary/70"
                   )}
                   href={item.href}
                 >
@@ -120,7 +130,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
                 />
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton className="w-full justify-start rounded-none gap-2 group hover:bg-accent hover:text-accent-foreground">
+                <SidebarMenuButton onClick={handleDisconnect} className="w-full justify-start rounded-none gap-2 group hover:bg-accent hover:text-accent-foreground">
                   <LogOut className="size-4 ml-1 shrink-0" />
                   <a
                     href="/"

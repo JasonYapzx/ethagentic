@@ -10,9 +10,9 @@ import {
   DrawerTrigger,
 } from "@/components/ui/drawer";
 import { siteConfig } from "@/lib/config";
-import { cn } from "@/lib/utils";
 import { Menu } from "lucide-react";
 import Link from "next/link";
+import WalletLogin from "../onchain-kit/wallet";
 
 export function MobileDrawer() {
   return (
@@ -33,15 +33,7 @@ export function MobileDrawer() {
           <DrawerDescription>{siteConfig.description}</DrawerDescription>
         </DrawerHeader>
         <DrawerFooter>
-          <Link
-            href="#"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "text-white rounded-full group"
-            )}
-          >
-            {siteConfig.cta}
-          </Link>
+          <WalletLogin text="Connect Wallet"/>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>

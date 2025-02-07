@@ -6,18 +6,17 @@ import { createReactAgent } from "@langchain/langgraph/prebuilt";
 import { ChatOpenAI } from "@langchain/openai";
 import dotenv from "dotenv";
 import fs from "fs";
-import readline from "readline";
+import { SecretVaultWrapper } from "nillion-sv-wrappers";
+import { orgConfig } from "./nillionOrgConfig";
 import {
-  RestockItemTool,
   DecreaseStockTool,
+  DefaultGraphQueryTool,
   GraphStockAggregationQueryTool,
   GraphSupplierLeadTimeQueryTool,
-  DefaultGraphQueryTool,
+  RestockItemTool,
 } from "./tools";
-import { SecretVaultWrapper } from 'nillion-sv-wrappers';
-import { orgConfig } from './nillionOrgConfig';
 
-dotenv.config({ path: '../.env' });
+dotenv.config({ path: "../.env" });
 
 /**
  * Validate required environment variables
@@ -47,12 +46,33 @@ function validateEnvironment() {
 validateEnvironment();
 
 // Nillion Schema IDs
-const API_KEY_SCHEMA_ID: string = '3c810f05-74b9-4c4d-846d-081c1045564e';
+const API_KEY_SCHEMA_ID: string = "3c810f05-74b9-4c4d-846d-081c1045564e";
 //@ts-ignore
-const collection = new SecretVaultWrapper(orgConfig.nodes, orgConfig.orgCredentials, API_KEY_SCHEMA_ID);
+const collection = new SecretVaultWrapper(
+  orgConfig.nodes,
+  orgConfig.orgCredentials,
+  API_KEY_SCHEMA_ID
+);
 await collection.init();
+// Write to Nillion
+// const data = [
+//   {
+//     CDP_API_KEY_NAME: { $allot: process.env.CDP_API_KEY_NAME },
+//     CDP_API_KEY_PRIVATE_KEY: { $allot: process.env.CDP_API_KEY_PRIVATE_KEY },
+//     OPENAI_API_KEY: { $allot: process.env.OPENAI_API_KEY },
+//     CONTRACT_ADDRESS: { $allot: process.env.CONTRACT_ADDRESS }
+//   }
+// ];
+// const dataWritten = await collection.writeToNodes(data);
+
 const decryptedCollectionData = await collection.readFromNodes({});
-const { _id, CDP_API_KEY_NAME, CDP_API_KEY_PRIVATE_KEY, OPENAI_API_KEY, CONTRACT_ADDRESS } = decryptedCollectionData[0];
+const {
+  _id,
+  CDP_API_KEY_NAME,
+  CDP_API_KEY_PRIVATE_KEY,
+  OPENAI_API_KEY,
+  CONTRACT_ADDRESS,
+} = decryptedCollectionData[1];
 
 // Store agent wallet data
 const WALLET_DATA_FILE = "wallet_data.txt";
@@ -68,7 +88,7 @@ const defaultGraphQueryTool = new DefaultGraphQueryTool();
  */
 async function initializeAgent() {
   try {
-    const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
+    const llm = new ChatOpenAI({ model: "gpt-4o-mini", openAIApiKey: OPENAI_API_KEY });
 
     let walletDataStr = fs.existsSync(WALLET_DATA_FILE)
       ? fs.readFileSync(WALLET_DATA_FILE, "utf8")
@@ -77,6 +97,8 @@ async function initializeAgent() {
     const config = {
       cdpWalletData: walletDataStr || undefined,
       networkId: process.env.NETWORK_ID || "base-sepolia",
+      apiKeyName: CDP_API_KEY_NAME,
+      apiKeyPrivateKey: CDP_API_KEY_PRIVATE_KEY
     };
 
     const agentkit = await CdpAgentkit.configureWithWallet(config);
@@ -84,7 +106,7 @@ async function initializeAgent() {
     const cdpToolkit = new CdpToolkit(agentkit);
     const tools = cdpToolkit.getTools();
 
-    tools.push(restockItemTool)
+    tools.push(restockItemTool);
     tools.push(decreaseStockTool);
     tools.push(graphStockAggregationQueryTool);
     tools.push(graphSupplierLeadTimeQueryTool);
@@ -141,7 +163,7 @@ async function initializeAgent() {
       Follow this process consistently and always provide clear explanations for your decisions.
 
       DO **NOT** answer in markdown format.
-    `
+    `,
     });
 
     const exportedWallet = await agentkit.exportWallet();
@@ -154,109 +176,64 @@ async function initializeAgent() {
   }
 }
 
-/**
- * Run chatbot interactively
- */
-async function runChatMode(agent: any, config: any) {
-  console.log("Chat mode started... Type 'exit' to end.");
-
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-  });
-
-  async function question(prompt: string): Promise<string> {
-    return new Promise((resolve) => rl.question(prompt, resolve));
-  }
-
-  try {
-    while (true) {
-      const userInput = await question("\nPrompt: ");
-
-      if (userInput.toLowerCase() === "exit") {
-        break;
-      }
-
-      const stream = await agent.stream(
-        { messages: [new HumanMessage(userInput)] },
-        config
-      );
-
-      for await (const chunk of stream) {
-        if ("agent" in chunk) {
-          console.log(chunk.agent.messages[0].content);
-        } else if ("tools" in chunk) {
-          console.log(chunk.tools.messages[0].content);
-        }
-        console.log("-------------------");
-      }
-    }
-  } catch (error: any) {
-    console.error("Error:", error.message);
-  } finally {
-    rl.close();
-  }
-}
-
-/**
- * Choose mode (chat mode)
- */
-async function chooseMode() {
-  return "chat";
-}
-
-
-import express from "express";
-import { createServer } from "http";
-import { Server as SocketIOServer } from "socket.io";
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+);
 
 async function startSocketServer() {
   const { agent, config } = await initializeAgent();
-  const app = express();
 
-  //@ts-ignore
-  const httpServer = createServer(app);
-  const io = new SocketIOServer(httpServer, {
-    cors: { origin: "*" } 
-  });
-
-  io.on("connection", (socket) => {
-    console.log("Client connected:", socket.id);
-    socket.on("user-message", async (userInput: string) => {
-      console.log("Received user message:", userInput);
-      
-      try {
-        const stream = await agent.stream({ messages: [new HumanMessage(userInput)] }, config);
-        for await (const chunk of stream) {
-          let content: string | undefined;
-          if ("agent" in chunk) {
-            content = chunk.agent.messages[0].content;
-          } else if ("tools" in chunk) {
-            content = chunk.tools.messages[0].content;
+  const channel = supabase
+    .channel("ai_messages")
+    .on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "ai_messages",
+      },
+      async (payload) => {
+        const { new: newMessage } = payload;
+        console.log("Received new message:", newMessage.content);
+        try {
+          const stream = await agent.stream(
+            { messages: [new HumanMessage(newMessage.content)] },
+            config
+          );
+          console.log("Agent stream started...");
+          console.log(stream);
+          for await (const chunk of stream) {
+            let content: string | undefined;
+            if ("agent" in chunk) {
+              content = chunk.agent.messages[0].content;
+            } else if ("tools" in chunk) {
+              content = chunk.tools.messages[0].content;
+            }
+            if (content) {
+              console.log("Agent response:", content);
+              await supabase.from("ai_messages_replies").insert({
+                content: content,
+                user_id: newMessage.user_id,
+                message_type: "agent-response",
+              });
+            }
           }
-          if (content) {
-            socket.emit("agent-response", content);
-          }
+        } catch (err: any) {
+          console.error("Error processing message:", err.message);
+          await supabase.from("ai_messages_replies").insert({
+            content: err.message,
+            user_id: newMessage.user_id,
+            message_type: "agent-error",
+          });
         }
-      } catch (err: any) {
-        console.error("Error processing message:", err.message);
-        socket.emit("agent-error", err.message);
       }
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Client disconnected:", socket.id);
-    });
-  });
-
-  const PORT = process.env.PORT || 5001;
-  httpServer.listen(PORT, () => {
-    console.log(`Socket server listening on port ${PORT}`);
-  });
+    )
+    .subscribe();
 }
 
 startSocketServer().catch((err) => {
   console.error("Fatal error starting socket server:", err);
   process.exit(1);
 });
-

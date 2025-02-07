@@ -1,156 +1,185 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useState, useEffect, useRef } from "react"
-import io from "socket.io-client"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { Bot, Send, User, Activity } from "lucide-react"
-import { Prism as SyntaxHighlighter } from "react-syntax-highlighter"
-import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism"
-import ReactMarkdown from "react-markdown"
-import { useTheme } from "next-themes"
-import { cn } from "@/lib/utils"
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
+import type React from "react";
+import { useState, useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Bot, Send, User, Activity } from "lucide-react";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { atomDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import ReactMarkdown from "react-markdown";
+import { useTheme } from "next-themes";
+import { cn } from "@/lib/utils";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { createClient } from "@supabase/supabase-js";
+import { getUserId } from "./utils";
 
-const socket = io("http://localhost:5001")
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || "",
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || ""
+);
+
+const userId = getUserId();
 
 interface Message {
-  text: string
-  isUser: boolean
-  isStreaming?: boolean
-  isAggregated?: boolean
+  text: string;
+  isUser: boolean;
+  isStreaming?: boolean;
+  isAggregated?: boolean;
 }
 
 const ChatPage: React.FC = () => {
-  const [input, setInput] = useState("")
-  const [showAnalysis, setShowAnalysis] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([])
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { theme } = useTheme()
+  const [input, setInput] = useState("");
+  const [showAnalysis, setShowAnalysis] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { theme } = useTheme();
+
+  const isAggregatableMessage = (text: string) => {
+    try {
+      return (
+        text.startsWith("400") || text.startsWith("Error") || JSON.parse(text)
+      );
+    } catch {
+      return false;
+    }
+  };
 
   useEffect(() => {
-    const isAggregatableMessage = (text: string) => {
-      try {
-        return text.startsWith("400") || text.startsWith("Error") || JSON.parse(text);
-      } catch {
-        return false;
-      }
-    };
-  
-    socket.on("agent-response", (data: string) => {
-      setMessages((prev) => {
-        if (isAggregatableMessage(data)) {
-          const nonAggregatedMessages = prev.filter(
-            (msg) => !msg.isAggregated
-          );
-          return [...nonAggregatedMessages, { text: "Thinking...", isUser: false, isAggregated: true }];
+    const channel = supabase
+      .channel("ai_messages")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "ai_messages_replies",
+          filter: `user_id=eq.${userId}`,
+        },
+        (payload) => {
+          const { new: newMessage } = payload;
+          setMessages((prev) => {
+            if (isAggregatableMessage(newMessage.content)) {
+              const nonAggregatedMessages = prev.filter(
+                (msg) => !msg.isAggregated
+              );
+              return [
+                ...nonAggregatedMessages,
+                { text: "Thinking...", isUser: false, isAggregated: true },
+              ];
+            }
+            return [...prev, { text: newMessage.content, isUser: false }];
+          });
         }
-        return [...prev, { text: data, isUser: false }];
-      });
-    });
-  
-    socket.on("agent-stream", (data: string) => {
-      setMessages((prev) => {
-        if (isAggregatableMessage(data)) {
-          const nonAggregatedMessages = prev.filter(
-            (msg) => !msg.isAggregated
-          );
-          return [...nonAggregatedMessages, { text: "Thinking...", isUser: false, isAggregated: true }];
-        }
-        return [...prev, { text: data, isUser: false }];
-      });
-    });
-  
-    socket.on("agent-error", (error: string) => {
-      setMessages((prev) => {
-        if (isAggregatableMessage(error)) {
-          const nonAggregatedMessages = prev.filter(
-            (msg) => !msg.isAggregated
-          );
-          return [...nonAggregatedMessages, { text: "Thinking...", isUser: false, isAggregated: true }];
-        }
-        return [...prev, { text: error, isUser: false }];
-      });
-    });
-  
+      )
+      .subscribe();
+
     return () => {
-      socket.off("agent-response");
-      socket.off("agent-stream");
-      socket.off("agent-error");
+      supabase.removeChannel(channel);
     };
-  }, []);
+  }, [userId]);
 
   const handleShowAnalysis = () => {
-    setShowAnalysis(!showAnalysis)
-  }
+    setShowAnalysis(!showAnalysis);
+  };
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (input.trim()) {
-      setMessages((prev) => [...prev, { text: input, isUser: true }])
-      socket.emit("user-message", input)
-      setInput("")
+      setMessages((prev) => [...prev, { text: input, isUser: true }]);
+
+      // Insert the message into Supabase
+      const result = await supabase
+        .from("ai_messages")
+        .insert({ content: input, user_id: userId });
+
+      console.log(result);
+
+      setInput("");
       if (textareaRef.current) {
-        textareaRef.current.style.height = "auto"
+        textareaRef.current.style.height = "auto";
       }
     }
-  }
+  };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
+      e.preventDefault();
+      sendMessage();
     }
-  }
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setInput(e.target.value)
+    setInput(e.target.value);
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`
+      textareaRef.current.style.height = "auto";
+      textareaRef.current.style.height = `${textareaRef.current.scrollHeight}px`;
     }
-  }
+  };
 
   const isJSON = (str: string) => {
     try {
-      JSON.parse(str)
-      return true
+      JSON.parse(str);
+      return true;
     } catch (e) {
-      return false
+      return false;
     }
-  }
+  };
 
   const formatMessage = (message: Message) => {
-    if (isJSON(message.text) || message.text.startsWith('Error') || message.text.startsWith('400')) {
+    if (
+      isJSON(message.text) ||
+      message.text.startsWith("Error") ||
+      message.text.startsWith("4")
+    ) {
       return showAnalysis ? (
-        <SyntaxHighlighter language="json" style={atomDark} wrapLines={true} wrapLongLines={true}>
+        <SyntaxHighlighter
+          language="json"
+          style={atomDark}
+          wrapLines={true}
+          wrapLongLines={true}
+        >
           {JSON.stringify(JSON.parse(message.text), null, 2)}
         </SyntaxHighlighter>
       ) : (
         "..."
-      )
+      );
     } else {
       return (
         <ReactMarkdown
-          className={`prose ${theme === "dark" ? "prose-invert text-white" : "text-gray-900"}`}
+          className={`prose ${
+            theme === "dark" ? "prose-invert text-white" : "text-gray-900"
+          }`}
           components={{
-            h1: ({ node, ...props }) => <h1 className="text-lg font-bold my-2" {...props} />,
-            h2: ({ node, ...props }) => <h2 className="text-base font-semibold my-1" {...props} />,
-            p: ({ node, ...props }) => <p className="my-1 leading-normal" {...props} />,
-            ul: ({ node, ...props }) => <ul className="list-disc ml-4 my-1" {...props} />,
+            h1: ({ node, ...props }) => (
+              <h1 className="text-lg font-bold my-2" {...props} />
+            ),
+            h2: ({ node, ...props }) => (
+              <h2 className="text-base font-semibold my-1" {...props} />
+            ),
+            p: ({ node, ...props }) => (
+              <p className="my-1 leading-normal" {...props} />
+            ),
+            ul: ({ node, ...props }) => (
+              <ul className="list-disc ml-4 my-1" {...props} />
+            ),
             li: ({ node, ...props }) => <li className="my-0.5" {...props} />,
           }}
         >
           {message.text}
         </ReactMarkdown>
-      )
+      );
     }
-  }
+  };
 
   return (
     <div className="flex flex-col h-screen bg-background">
@@ -158,16 +187,31 @@ const ChatPage: React.FC = () => {
         <div className="h-full overflow-y-auto p-4 max-w-3xl mx-auto">
           <div className="space-y-4 pb-36 w-full">
             {messages.map((msg, idx) => (
-              <div key={idx} className={`flex ${msg.isUser ? "justify-end" : "justify-start"}`}>
-                <div className={`flex gap-3 max-w-[85%] ${msg.isUser ? "flex-row-reverse" : "flex-row"}`}>
+              <div
+                key={idx}
+                className={`flex ${
+                  msg.isUser ? "justify-end" : "justify-start"
+                }`}
+              >
+                <div
+                  className={`flex gap-3 max-w-[85%] ${
+                    msg.isUser ? "flex-row-reverse" : "flex-row"
+                  }`}
+                >
                   <div
                     className={`w-8 h-8 flex items-center justify-center flex-shrink-0 ${
-                      msg.isUser ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground"
+                      msg.isUser
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
                     }`}
                   >
                     {msg.isUser ? (
                       <div className="text-sm font-semibold">
-                        <User className={`w-5 h-5 ${theme === "dark" ? "text-white" : "text-black"} `} />
+                        <User
+                          className={`w-5 h-5 ${
+                            theme === "dark" ? "text-white" : "text-black"
+                          } `}
+                        />
                       </div>
                     ) : (
                       <Bot className="w-5 h-5" />
@@ -175,12 +219,16 @@ const ChatPage: React.FC = () => {
                   </div>
                   <div
                     className={`px-4 py-2 text-sm overflow-hidden ${
-                      msg.isUser ? "bg-primary text-primary-foreground" : "bg-muted text-foreground"
+                      msg.isUser
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-foreground"
                     }`}
                   >
                     <div className="break-words whitespace-pre-wrap">
                       {formatMessage(msg)}
-                      {msg.isStreaming && <span className="animate-pulse">▊</span>}
+                      {msg.isStreaming && (
+                        <span className="animate-pulse">▊</span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -203,14 +251,16 @@ const ChatPage: React.FC = () => {
               rows={1}
             />
             <div className="absolute bottom-0 pb-2 flex w-full justify-between px-3 z-50 bg-gradient-to-t from-background to-background/80">
-            <TooltipProvider>
+              <TooltipProvider>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button
                       onClick={handleShowAnalysis}
                       variant="ghost"
                       size="icon"
-                      className={`h-8 w-8 ${showAnalysis ? "text-primary" : "text-muted-foreground"}`}
+                      className={`h-8 w-8 ${
+                        showAnalysis ? "text-primary" : "text-muted-foreground"
+                      }`}
                     >
                       <Activity className="h-4 w-4" />
                       <span className="sr-only">Toggle analysis</span>
@@ -225,7 +275,12 @@ const ChatPage: React.FC = () => {
                 onClick={sendMessage}
                 size="icon"
                 variant={input ? "default" : "ghost"}
-                className={cn('h-8 w-8', input ? "hover:text-white" : "text-muted-foreground hover:text-primary")}
+                className={cn(
+                  "h-8 w-8",
+                  input
+                    ? "hover:text-white"
+                    : "text-muted-foreground hover:text-primary"
+                )}
                 disabled={!input.trim()}
               >
                 <Send className="h-4 w-4" />
@@ -236,8 +291,7 @@ const ChatPage: React.FC = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChatPage
-
+export default ChatPage;
