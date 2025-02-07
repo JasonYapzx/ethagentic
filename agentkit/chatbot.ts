@@ -88,7 +88,7 @@ const defaultGraphQueryTool = new DefaultGraphQueryTool();
  */
 async function initializeAgent() {
   try {
-    const llm = new ChatOpenAI({ model: "gpt-4o-mini" });
+    const llm = new ChatOpenAI({ model: "gpt-4o-mini", openAIApiKey: OPENAI_API_KEY });
 
     let walletDataStr = fs.existsSync(WALLET_DATA_FILE)
       ? fs.readFileSync(WALLET_DATA_FILE, "utf8")
@@ -97,6 +97,8 @@ async function initializeAgent() {
     const config = {
       cdpWalletData: walletDataStr || undefined,
       networkId: process.env.NETWORK_ID || "base-sepolia",
+      apiKeyName: CDP_API_KEY_NAME,
+      apiKeyPrivateKey: CDP_API_KEY_PRIVATE_KEY
     };
 
     const agentkit = await CdpAgentkit.configureWithWallet(config);
