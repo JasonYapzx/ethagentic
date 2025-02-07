@@ -123,3 +123,25 @@ repository-root
 - Add Playwright scripts for supplier interaction.
 - Expand consumer purchase flow for enhanced user experience.
 - Explore additional Nillion use cases for advanced privacy solutions.
+
+## The Graph Implementations
+The Graph Schema is in frontend > .graphclient
+
+### Subgraph Development
+- Simple event tracking entities like `graph init`.
+- Domain entities like Accounts, Tokens, etc., properly filled.
+- Best practices applied like getOrCreate, Bytes as IDs, immutable entities, etc.
+- Published to The Graph Network.
+- Aggregations implemented.
+- Full-text search included.
+- Schema best practices applied (Enums, Interfaces, Fragments).
+
+### Query The Graph
+- Simple queries to The Graph.
+- Used Graph Client.
+- Used sorting and/or filtering.
+- Used large pagination.
+- Used logical operators.
+- Used a better GraphQL library like Apollo or URQL.
+- Used GraphQL variables.
+- Used The Graph Network.
