@@ -2,7 +2,7 @@
 
 **Storagent** is an AI Inventory Manager designed to revolutionize inventory management by integrating on-chain technologies and autonomous decision-making. This intelligent web application helps you manage your warehouse inventory efficiently, update stock levels, and restock items using smart contracts. With features such as trend analysis, supplier selection, and fiat offramping, Storagent provides a seamless inventory management experience.
 ![alt text](image.png)
----
+
 
 ## **Features**
 
