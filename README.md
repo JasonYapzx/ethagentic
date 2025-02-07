@@ -72,7 +72,7 @@
    Consumers purchase items using CDP Commerce.
 
 5. **Autonomous Supplier Interaction**:  
-   Playwright scripts automate purchases from suppliers based on AI-driven decisions.
+   Browser-use scripts automate purchases from suppliers based on AI-driven decisions.
 
 ---
 
@@ -116,12 +116,6 @@ repository-root
 
 6. Access the Dashboard
     Open http://localhost:3000 in your browser to interact with the application.
-
-
-## Future Enhancements
-- Add Playwright scripts for supplier interaction.
-- Expand consumer purchase flow for enhanced user experience.
-- Explore additional Nillion use cases for advanced privacy solutions.
 
 ## The Graph Implementations
 The Graph Schema is in frontend > .graphclient
