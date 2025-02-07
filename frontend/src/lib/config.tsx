@@ -20,59 +20,55 @@ export const siteConfig = {
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   keywords: [
     "Storagen",
-    "Multi-Agent Systems",
-    "Tool Integration",
-    "Workflow Automation",
+    "Automated Inventory System",
+    "Smart Contract Integration",
+    "AI Agent Workflow",
   ],
   links: {
-    email: "support@aiagentsdk.com",
-    twitter: "https://twitter.com/aiagentsdk",
-    discord: "https://discord.gg/aiagentsdk",
-    github: "https://github.com/aiagentsdk",
-    instagram: "https://instagram.com/aiagentsdk",
+    github: "https://github.com/eugenetayyj/ethagentic",
   },
   hero: {
     title: "Storagen",
     description:
-      "Create powerful AI agent workflows with just a few lines of code, enabling complex task automation and decision-making processes.",
-    cta: "Get Started",
-    ctaDescription: "Available for all major programming languages",
+      "Get assistance with your inventory management needs with Storagen, a powerful AI agent inventory management system.",
+    cta: "Get Storagent",
+    ctaDescription: "Stored entirely on-chain, ensuring transparency and security.",
   },
   features: [
     {
-      name: "Simple Agent Workflows",
+      name: "Natural Language Inventory Management",
       description:
-        "Easily create and manage AI agent workflows with intuitive APIs.",
+        "Chat naturally with your AI agent to check stock levels, understand trends, and manage inventory effortlessly.",
       icon: <BrainIcon className="h-6 w-6" />,
     },
     {
-      name: "Multi-Agent Systems",
+      name: "Automated Restocking",
       description:
-        "Build complex systems with multiple AI agents working together.",
-      icon: <UsersIcon className="h-6 w-6" />,
+        "Let your AI agent monitor inventory levels and automatically restock items when needed, saving you time and preventing stockouts.",
+      icon: <Sparkles className="h-6 w-6" />,
     },
     {
-      name: "Tool Integration",
+      name: "Smart Supplier Management",
       description:
-        "Seamlessly integrate external tools and APIs into your agent workflows.",
+        "Automatically discover and integrate new suppliers, compare prices, and maintain a robust supply chain network.",
+      icon: <Package className="h-6 w-6" />,
+    },
+    {
+      name: "Secure Automated Purchasing",
+      description:
+        "Enable your agent to make secure purchases using your verified credentials when stock levels are low.",
       icon: <PlugIcon className="h-6 w-6" />,
     },
     {
-      name: "Cross-Language Support",
+      name: "Real-time Analytics",
       description:
-        "Available in all major programming languages for maximum flexibility.",
-      icon: <GlobeIcon className="h-6 w-6" />,
-    },
-    {
-      name: "Customizable Agents",
-      description:
-        "Design and customize agents to fit your specific use case and requirements.",
+        "Get instant insights into inventory trends, supplier performance, and stock optimization recommendations.",
       icon: <CodeIcon className="h-6 w-6" />,
     },
     {
-      name: "Efficient Execution",
+      name: "On-chain Transparency",
       description:
-        "Optimize agent performance with built-in efficiency and scalability features.",
+        "All inventory transactions and supplier interactions are recorded on-chain for complete transparency and auditability.",
       icon: <ZapIcon className="h-6 w-6" />,
     },
   ],
@@ -270,8 +266,7 @@ export type SiteConfig = typeof siteConfig;
 
 export const AppNavBar = [
   { icon: Home, label: "Home", href: "/app" },
-  // { icon: Search, label: "Search", href: "/app/search" },
   { icon: Package, label: "Inventories", href: "/app/inventories" },
   { icon: Sparkles, label: "Assistant", href: "/app/assistant" },
-  // { icon: Settings, label: "Tools", href: "/app/tools" },
+  { icon: User, label: "Profile", href: "/app/profile" },
 ]

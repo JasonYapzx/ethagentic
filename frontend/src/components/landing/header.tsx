@@ -6,11 +6,12 @@ import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import WalletLogin from "../onchain-kit/wallet";
 
 export function Header() {
   return (
     <header className="sticky top-0 h-[var(--header-height)] z-50 p-0 bg-background/60 backdrop-blur">
-      <div className="flex justify-between items-center container mx-auto p-2">
+      <div className="flex justify-between items-center container mx-auto pt-1">
         <Link
           href="/"
           title="brand-logo"
@@ -20,15 +21,7 @@ export function Header() {
           <span className="font-semibold text-lg">{siteConfig.name}</span>
         </Link>
         <div className="hidden lg:block">
-          <Link
-            href="/app"
-            className={cn(
-              buttonVariants({ variant: "default" }),
-              "h-8 text-primary-foreground rounded-lg group tracking-tight font-medium"
-            )}
-          >
-            {siteConfig.cta}
-          </Link>
+          <WalletLogin text="Connect Wallet" />
         </div>
         <div className="mt-2 cursor-pointer block lg:hidden">
           <MobileDrawer />
