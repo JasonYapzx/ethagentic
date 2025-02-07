@@ -58,7 +58,7 @@ async def purchaseItem(product, website, cookiePath):
     agent = Agent(
         browser_context=context,
         task=f"""
-            Go to {website}, search for {product}, click on the first product, add it to cart.
+            Go to {website}, search for {product}, click on the first product, add it to cart and finally click proceed to checkout.
         """,
         llm=ChatOpenAI(model="gpt-4-turbo"),
     )
