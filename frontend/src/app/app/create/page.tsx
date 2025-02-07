@@ -8,14 +8,12 @@ import dotenv from "dotenv";
 import { ethers } from "ethers";
 import {
   Loader2,
-  ShoppingBasket,
-  ShoppingCart,
-  TrendingDown,
+  ShoppingBasket
 } from "lucide-react";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 export default function CreateInventoryPage() {
   const [itemId, setItemId] = useState("");
