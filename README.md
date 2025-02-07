@@ -45,7 +45,7 @@
 
   - Used for securely storing private data. Nillion is a secure computation network that decentralizes trust for high-value and sensitive data.
 
-- **Playwright**:
+- **Browser-Use**:
 
   - Automates item purchases from suppliers.
 
@@ -83,7 +83,7 @@ repository-root
 ├── frontend # Frontend application (Next.js)
 ├── agentkit # AI logic and chatbot functionality (CDP Agent Kit)
 ├── contract # Smart contracts for inventory management
-├── (to be added) playwright-scripts # Automation scripts for supplier interactions
+├── scripts/browser_use_bot # Automation scripts for supplier interactions
 
 ---
 
