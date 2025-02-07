@@ -1,7 +1,7 @@
 // pages/api/checkout.ts
 import { NextRequest, NextResponse } from "next/server";
 
-type OrderItem = {
+export type OrderItem = {
   name: string;
   quantity: number;
   unitPrice: number;
