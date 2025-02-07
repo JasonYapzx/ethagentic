@@ -19,6 +19,7 @@ interface Message {
   text: string
   isUser: boolean
   isStreaming?: boolean
+  isAggregated?: boolean
 }
 
 const ChatPage: React.FC = () => {
@@ -30,49 +31,56 @@ const ChatPage: React.FC = () => {
   const { theme } = useTheme()
 
   useEffect(() => {
+    const isAggregatableMessage = (text: string) => {
+      try {
+        return text.startsWith("400") || text.startsWith("Error") || JSON.parse(text);
+      } catch {
+        return false;
+      }
+    };
+  
     socket.on("agent-response", (data: string) => {
       setMessages((prev) => {
-        const lastMessage = prev[prev.length - 1]
-        if (lastMessage && lastMessage.isStreaming) {
-          const updatedMessages = [...prev.slice(0, -1)]
-          updatedMessages.push({
-            ...lastMessage,
-            text: lastMessage.text + data,
-            isStreaming: false,
-          })
-          return updatedMessages
-        } else {
-          return [...prev, { text: data, isUser: false, isStreaming: false }]
+        if (isAggregatableMessage(data)) {
+          const nonAggregatedMessages = prev.filter(
+            (msg) => !msg.isAggregated
+          );
+          return [...nonAggregatedMessages, { text: "Thinking...", isUser: false, isAggregated: true }];
         }
-      })
-    })
-
+        return [...prev, { text: data, isUser: false }];
+      });
+    });
+  
     socket.on("agent-stream", (data: string) => {
       setMessages((prev) => {
-        const lastMessage = prev[prev.length - 1]
-        if (lastMessage && lastMessage.isStreaming) {
-          const updatedMessages = [...prev.slice(0, -1)]
-          updatedMessages.push({
-            ...lastMessage,
-            text: lastMessage.text + data,
-          })
-          return updatedMessages
-        } else {
-          return [...prev, { text: data, isUser: false, isStreaming: true }]
+        if (isAggregatableMessage(data)) {
+          const nonAggregatedMessages = prev.filter(
+            (msg) => !msg.isAggregated
+          );
+          return [...nonAggregatedMessages, { text: "Thinking...", isUser: false, isAggregated: true }];
         }
-      })
-    })
-
+        return [...prev, { text: data, isUser: false }];
+      });
+    });
+  
     socket.on("agent-error", (error: string) => {
-      setMessages((prev) => [...prev, { text: error, isUser: false }])
-    })
-
+      setMessages((prev) => {
+        if (isAggregatableMessage(error)) {
+          const nonAggregatedMessages = prev.filter(
+            (msg) => !msg.isAggregated
+          );
+          return [...nonAggregatedMessages, { text: "Thinking...", isUser: false, isAggregated: true }];
+        }
+        return [...prev, { text: error, isUser: false }];
+      });
+    });
+  
     return () => {
-      socket.off("agent-response")
-      socket.off("agent-stream")
-      socket.off("agent-error")
-    }
-  }, [])
+      socket.off("agent-response");
+      socket.off("agent-stream");
+      socket.off("agent-error");
+    };
+  }, []);
 
   const handleShowAnalysis = () => {
     setShowAnalysis(!showAnalysis)
@@ -118,7 +126,7 @@ const ChatPage: React.FC = () => {
   }
 
   const formatMessage = (message: Message) => {
-    if (isJSON(message.text)) {
+    if (isJSON(message.text) || message.text.startsWith('Error') || message.text.startsWith('400')) {
       return showAnalysis ? (
         <SyntaxHighlighter language="json" style={atomDark} wrapLines={true} wrapLongLines={true}>
           {JSON.stringify(JSON.parse(message.text), null, 2)}

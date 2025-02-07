@@ -8,14 +8,13 @@ import dotenv from "dotenv";
 import { ethers } from "ethers";
 import {
   Loader2,
-  ShoppingBasket,
   ShoppingCart,
-  TrendingDown,
+  TrendingDown
 } from "lucide-react";
 import { useState } from "react";
 import { Toaster, toast } from "react-hot-toast";
 
-dotenv.config();
+dotenv.config({ path: '../.env' });
 
 export default function InventoryDashboard() {
   const [decreaseItemId, setDecreaseItemId] = useState("");
