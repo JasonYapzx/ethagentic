@@ -1,6 +1,6 @@
 # Storagent: AI-Powered Inventory Manager
 
-**Storagent** is an AI Inventory Manager designed to revolutionize inventory management by integrating on-chain technologies and autonomous decision-making. This intelligent web application helps you manage your warehouse inventory efficiently, update stock levels, and restock items using smart contracts. With features such as trend analysis, supplier selection, and fiat offramping, Storagent provides a seamless inventory management experience.
+**Storagent** is an AI Inventory Manager designed to revolutionize inventory management by integrating on-chain technologies and autonomous decision-making. This intelligent web application helps you manage your warehouse inventory efficiently, update stock levels, and restock items using smart contracts. With features such as trend analysis and supplier selection, Storagent provides a seamless inventory management experience.
 ![alt text](image.png)
 
 
@@ -23,8 +23,8 @@
   - Enables secure and transparent inventory operations.
 
 - **Seamless Consumer Experience**
+
   - Consumers can purchase items directly from the warehouse.
-  - Users can offramp crypto payments from web3 transactions into fiat seamlessly.
 
 ---
 
@@ -35,7 +35,6 @@
   - **CDP Agent Kit**: AI-powered inventory management.
   - **CDP Onchain Kit**: Provides access to wallets and smart contract interactions.
   - **CDP Commerce**: Enables consumers to purchase items from the warehouse.
-  - **CDP Offramp**: Allows users to convert crypto payments into fiat.
 
 - **The Graph**:
 
@@ -70,7 +69,7 @@
    Users can manually interact with the smart contract to update stock levels, add new items, and monitor inventory data via the dashboard.
 
 4. **Secure Transactions**:  
-   Consumers purchase items using CDP Commerce, while CDP Offramp handles fiat conversions for smooth financial transactions.
+   Consumers purchase items using CDP Commerce.
 
 5. **Autonomous Supplier Interaction**:  
    Playwright scripts automate purchases from suppliers based on AI-driven decisions.
