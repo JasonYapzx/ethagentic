@@ -22,6 +22,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { useCallback } from "react";
 import { useDisconnect } from 'wagmi';
+import { FloatingDock } from "../common/floating-dock";
 
 // import StoragentLogo from "../../public/images/storagent.png";
 
@@ -34,8 +35,23 @@ export function NavBar({ children }: { children: React.ReactNode }) {
     connectors.map((connector: any) => disconnect({ connector }));
   }, [disconnect, connectors]);
 
+  const items = AppNavBar.map(item => ({
+    title: item.label,
+    icon: <item.icon />,
+    href: item.href
+  }))
+  items.push({
+    title: "Create",
+    icon: <Plus />,
+    href: "/app/create"
+  })
+
   return (
     <SidebarProvider>
+      <FloatingDock
+        items={items}
+        desktopClassName="items-center w-full overflow-x-none flex justify-center fixed bottom-0 left-0 right-0 bg-background border-t z-50"
+      />
       <div className="flex min-h-screen w-full">
         <Sidebar
           className={cn(
@@ -100,7 +116,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
                   className={cn(
                     "pl-2 w-full flex flex-row items-center group hover:bg-accent hover:text-accent-foreground",
                     pathName === item.href &&
-                      "bg-primary/40 text-white hover:bg-primary/70"
+                    "bg-primary/40 text-white hover:bg-primary/70"
                   )}
                   href={item.href}
                 >
@@ -146,7 +162,7 @@ export function NavBar({ children }: { children: React.ReactNode }) {
             </SidebarMenu>
           </SidebarFooter>
         </Sidebar>
-        <main className="flex-1 bg-background w-full mr-48">{children}</main>
+        <main className="flex-1 bg-background w-full md:mr-48 mr-none">{children}</main>
       </div>
     </SidebarProvider>
   );
