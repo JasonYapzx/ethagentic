@@ -239,7 +239,7 @@ const ChatPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background to-background/80 p-6">
+      <div className="fixed md:bottom-0 bottom-12 left-0 right-0 bg-gradient-to-t from-background to-background/80 p-6">
         <div className="max-w-3xl mx-auto border border-gray-300 focus:ring-0 focus:outline-none">
           <div className="relative border-gray-300 focus:ring-0 focus:outline-none">
             <Textarea
