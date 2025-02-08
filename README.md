@@ -101,7 +101,7 @@ repository-root
 3. Install Dependencies
 
    ```bash
-    npm i
+    npm install:all
    ```
 
 4. Build the Application
@@ -116,6 +116,13 @@ repository-root
 
 6. Access the Dashboard
     Open http://localhost:3000 in your browser to interact with the application.
+
+7. To develop Storagent's frontend application
+   ```bash
+   cd frontend
+   npm install
+   npm run dev
+   ```
 
 ## The Graph Implementations
 The Graph Schema is in frontend > .graphclient

@@ -107,7 +107,7 @@ const StockDecreaseHistory: React.FC<{
   );
 
   return (
-    <Card className="w-full">
+    <Card className="w-full overflow-x-scroll">
       <CardHeader>
         <CardTitle>Stock Decrease History</CardTitle>
         <CardDescription>
