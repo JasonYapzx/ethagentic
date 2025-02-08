@@ -54,7 +54,6 @@ async def purchaseItem(product, website, cookiePath):
     )
     context = BrowserContext(browser=browser, config=config)
 
-    product = "AA batteries"
     agent = Agent(
         browser_context=context,
         task=f"""
@@ -66,8 +65,8 @@ async def purchaseItem(product, website, cookiePath):
     print(result)
 
 async def main():
-    product = "AA batteries"
-    website = "https://www.amazon.com/"
+    product = "pepsi black canned 320ml"
+    website = "https://www.amazon.sg/"
     cookiePath = "./website_cookie.json"
 
     # await saveCookies(website, cookiePath)
