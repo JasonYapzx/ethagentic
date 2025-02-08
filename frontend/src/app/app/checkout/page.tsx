@@ -12,7 +12,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import dotenv from "dotenv";
-import { Battery } from "lucide-react";
+import { CupSoda } from "lucide-react";
 import { useState } from "react";
 
 dotenv.config({ path: "../../../../.env" });
@@ -27,7 +27,7 @@ export default function CheckoutPage() {
   const [quantity, setQuantity] = useState(1);
 
   // Demo Product Data
-  const productName: string = "Double AA Battery";
+  const productName: string = "Pepsi Black";
   const unitPrice: number = 0.25;
   const total: number = quantity * unitPrice;
 
@@ -71,12 +71,12 @@ export default function CheckoutPage() {
         <CardHeader>
           <CardTitle className="text-2xl">Checkout</CardTitle>
           <CardDescription>
-            Complete your purchase for Double AA Batteries
+            Complete your purchase for {productName}
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex items-center space-x-4 mb-4">
-            <Battery className="w-12 h-12 text-blue-500" />
+            <CupSoda className="w-12 h-12 text-blue-500" />
             <div>
               <h2 className="text-xl font-semibold">{productName}</h2>
               <p className="text-gray-600">
