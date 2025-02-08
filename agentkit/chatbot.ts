@@ -9,6 +9,7 @@ import fs from "fs";
 import { SecretVaultWrapper } from "nillion-sv-wrappers";
 import { orgConfig } from "./nillionOrgConfig";
 import {
+  AskForRestockConfirmationTool,
   DecreaseStockTool,
   DefaultGraphQueryTool,
   GraphStockAggregationQueryTool,
@@ -79,6 +80,7 @@ const decreaseStockTool = new DecreaseStockTool(CONTRACT_ADDRESS);
 const graphStockAggregationQueryTool = new GraphStockAggregationQueryTool();
 const graphSupplierLeadTimeQueryTool = new GraphSupplierLeadTimeQueryTool();
 const defaultGraphQueryTool = new DefaultGraphQueryTool();
+const askForRestockConfirmationTool = new AskForRestockConfirmationTool();
 
 /**
  * Initialize the CDP AgentKit
@@ -87,7 +89,7 @@ async function initializeAgent() {
   try {
     const llm = new ChatOpenAI({
       model: "gpt-4o-mini",
-      openAIApiKey: OPENAI_API_KEY,
+      openAIApiKey: process.env.OPENAI_API_KEY,
     });
 
     let walletDataStr = fs.existsSync(WALLET_DATA_FILE)
@@ -111,6 +113,7 @@ async function initializeAgent() {
     tools.push(graphStockAggregationQueryTool);
     tools.push(graphSupplierLeadTimeQueryTool);
     tools.push(defaultGraphQueryTool);
+    tools.push(askForRestockConfirmationTool);
 
     const memory = new MemorySaver();
     const agentConfig = { configurable: { thread_id: "CDP Inventory Bot" } };
@@ -121,8 +124,12 @@ async function initializeAgent() {
       checkpointSaver: memory,
       messageModifier: `
     You are an AI-powered inventory assistant that helps manage restocking decisions using on-chain data and supplier information. 
-    Users will interact with you in a chat-like manner, often describing actions like "consume," "use," or "sell" or "decrease" that decrease inventory levels. 
+    Users will interact with you in a chat-like manner, often describing actions like "consume," "use," or "sell" or "decrease" that decrease inventory levels.
+    When you are going to use a tool, first make sure to extract the necessary information from the user's message.
     You are to decrease the inventory level using the **DecrementStockTool** provided to you.
+    After decreasing inventory, evaluate if restocking is needed.
+    Only after you evaluate then ask for restocking confirmation using AskForRestockConfirmationTool.
+    DO NOT EVER RESTOCK WITHOUT ASKING FOR CONFIRMATION UNLESS THE USER EXPLICITLY ASKS FOR IT.
 
     After decreasing inventory levels, you must **always run a check to decide if restocking is needed**.
     Restocking decisions and actions must follow the instructions below:
@@ -141,25 +148,27 @@ async function initializeAgent() {
 
       3️⃣ **Evaluate Restocking Need**  
         - You must use BOTH **recent usage trends** and **threshold levels** to decide if restocking is required.  
+        - Use AskForRestockConfirmationTool to ask for restock confirmation. Do not ask normally, **always use the tool**.
       - Restock if:  
         - The stock level is below the threshold, and  
         - The usage trend shows multiple decreases.  
     
       4️⃣ **Identify the Best Supplier**  
          - Use the **GraphSupplierLeadTimeQueryTool** to get supplier lead times.  
-         - Select the **fastest** supplier. If multiple suppliers have the same delivery time, break ties randomly.  
+         - Select the **fastest** supplier. If multiple suppliers have the same delivery time, break ties randomly.
+         - ASK FOR USER CONFIRMATION with AskForRestockConfirmationTool before proceeding with restocking.  
     
       5️⃣ **Request User Confirmation**  
-        - If restocking is necessary, notify the user and provide your rationale.  
+        - If restocking is necessary, notify the user and provide your rationale. Ask for permission with AskForRestockConfirmationTool.
         - Suggest the best supplier and ask for confirmation before proceeding.
-        - You can ask for permission by sending a separate message with just "restock-confirmation" as the content.  
+        - Use AskForRestockConfirmationTool to ask for confirmation.
       
       6️⃣ **Execute Restock (if confirmed)**  
         - If the user agrees, execute a restock using the **RestockItemTool**. This will update the blockchain. YOU MUST DO THIS.    
     
       ### **Example Conversation**
       **User:** "Check if Item 3 needs restocking."
-      **AI:** "Item 3 has dropped below its threshold. The best supplier is FreshFoods Inc. with a delivery time of 24 hours. Proceed with restock?"
+      **AI:** "Item 3 has dropped below its threshold. The best supplier is FreshFoods Inc. with a delivery time of 24 hours. \", \"restock-confirmation\""
 
       Follow this process consistently and always provide clear explanations for your decisions.
 
