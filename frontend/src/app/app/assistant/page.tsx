@@ -139,7 +139,8 @@ const ChatPage: React.FC = () => {
     if (
       isJSON(message.text) ||
       message.text.startsWith("Error") ||
-      message.text.startsWith("4")
+      message.text.startsWith("400") || 
+      message.text.startsWith("409")
     ) {
       return showAnalysis ? (
         <SyntaxHighlighter
