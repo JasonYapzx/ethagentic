@@ -17,7 +17,7 @@ export default function RootLayout({
     return (
         <NavBar>
             {children}
-            <div className="fixed bottom-4 rounded-none right-4 z-50">
+            <div className="hidden md:block fixed bottom-4 rounded-none right-4 z-50">
                 <Wallet className="bg-primary text-primary-foreground hover:bg-[#D9C8F7] transition-all duration-300 rounded-none">
                     <ConnectWallet className="bg-primary text-primary-foreground hover:bg-[#D9C8F7] transition-all duration-300 rounded-none">
                         <Avatar className="h-6 w-6" />

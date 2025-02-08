@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/tooltip";
 import { createClient } from "@supabase/supabase-js";
 import { getUserId } from "./utils";
+import MqttPublisher from "./mqtt";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL || "",
@@ -41,6 +42,58 @@ const ChatPage: React.FC = () => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { theme } = useTheme();
 
+  useEffect(() => {
+    const fetchMessages = async () => {
+      // 1. Fetch the user-sent messages
+      const { data: userMessages, error: userError } = await supabase
+        .from("ai_messages")
+        .select("content, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: true });
+
+      // 2. Fetch the AI replies
+      const { data: aiMessages, error: aiError } = await supabase
+        .from("ai_messages_replies")
+        .select("content, created_at")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: true });
+
+      // Handle any errors
+      if (userError) {
+        console.error("Error fetching user messages:", userError.message);
+      }
+      if (aiError) {
+        console.error("Error fetching AI messages:", aiError.message);
+      }
+
+      // 3. Combine and sort
+      if (userMessages && aiMessages) {
+        // Mark each message with who sent it
+        const userMessagesMarked = userMessages.map((msg) => ({
+          text: msg.content,
+          createdAt: new Date(msg.created_at),
+          isUser: true,
+        }));
+
+        const aiMessagesMarked = aiMessages.map((msg) => ({
+          text: msg.content,
+          createdAt: new Date(msg.created_at),
+          isUser: false,
+        }));
+
+        // Combine in a single array
+        const combined = [...userMessagesMarked, ...aiMessagesMarked];
+
+        // Sort by `createdAt`
+        combined.sort((a: any, b: any) => a.createdAt - b.createdAt);
+
+        // 4. Update state
+        setMessages(combined);
+      }
+    };
+
+    fetchMessages();
+  }, [userId]);
   const isAggregatableMessage = (text: string) => {
     try {
       return (
@@ -126,6 +179,10 @@ const ChatPage: React.FC = () => {
     }
   };
 
+  const handleProceedWithRestock = () => {
+    console.log("Proceeding with restock...");
+  };
+
   const isJSON = (str: string) => {
     try {
       JSON.parse(str);
@@ -139,7 +196,8 @@ const ChatPage: React.FC = () => {
     if (
       isJSON(message.text) ||
       message.text.startsWith("Error") ||
-      message.text.startsWith("4")
+      message.text.startsWith("400") ||
+      message.text.startsWith("409")
     ) {
       return showAnalysis ? (
         <SyntaxHighlighter
@@ -186,59 +244,72 @@ const ChatPage: React.FC = () => {
       <div className="flex-1 overflow-hidden">
         <div className="h-full overflow-y-auto p-4 max-w-3xl mx-auto">
           <div className="space-y-4 pb-36 w-full">
-            {messages.map((msg, idx) => (
-              <div
-                key={idx}
-                className={`flex ${
-                  msg.isUser ? "justify-end" : "justify-start"
-                }`}
-              >
+            {messages.map((msg, idx) => {
+              if (msg.text === "restock-confirmation") {
+                return (
+                  <div
+                    key={idx}
+                    className="flex items-center space-x-2 text-muted-foreground"
+                  >
+                    <Bot className="h-6 w-6" />
+                    <MqttPublisher />
+                  </div>
+                );
+              }
+              return (
                 <div
-                  className={`flex gap-3 max-w-[85%] ${
-                    msg.isUser ? "flex-row-reverse" : "flex-row"
+                  key={idx}
+                  className={`flex ${
+                    msg.isUser ? "justify-end" : "justify-start"
                   }`}
                 >
                   <div
-                    className={`w-8 h-8 flex items-center justify-center flex-shrink-0 ${
-                      msg.isUser
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-muted-foreground"
+                    className={`flex gap-3 max-w-[85%] ${
+                      msg.isUser ? "flex-row-reverse" : "flex-row"
                     }`}
                   >
-                    {msg.isUser ? (
-                      <div className="text-sm font-semibold">
-                        <User
-                          className={`w-5 h-5 ${
-                            theme === "dark" ? "text-white" : "text-black"
-                          } `}
-                        />
-                      </div>
-                    ) : (
-                      <Bot className="w-5 h-5" />
-                    )}
-                  </div>
-                  <div
-                    className={`px-4 py-2 text-sm overflow-hidden ${
-                      msg.isUser
-                        ? "bg-primary text-primary-foreground"
-                        : "bg-muted text-foreground"
-                    }`}
-                  >
-                    <div className="break-words whitespace-pre-wrap">
-                      {formatMessage(msg)}
-                      {msg.isStreaming && (
-                        <span className="animate-pulse">▊</span>
+                    <div
+                      className={`w-8 h-8 flex items-center justify-center flex-shrink-0 ${
+                        msg.isUser
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {msg.isUser ? (
+                        <div className="text-sm font-semibold">
+                          <User
+                            className={`w-5 h-5 ${
+                              theme === "dark" ? "text-white" : "text-black"
+                            } `}
+                          />
+                        </div>
+                      ) : (
+                        <Bot className="w-5 h-5" />
                       )}
+                    </div>
+                    <div
+                      className={`px-4 py-2 text-sm overflow-hidden ${
+                        msg.isUser
+                          ? "bg-primary text-primary-foreground"
+                          : "bg-muted text-foreground"
+                      }`}
+                    >
+                      <div className="break-words whitespace-pre-wrap">
+                        {formatMessage(msg)}
+                        {msg.isStreaming && (
+                          <span className="animate-pulse">▊</span>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
             <div ref={messagesEndRef} />
           </div>
         </div>
       </div>
-      <div className="fixed bottom-0 left-0 right-0 bg-gradient-to-t from-background to-background/80 p-6">
+      <div className="fixed md:bottom-0 bottom-12 left-0 right-0 bg-gradient-to-t from-background to-background/80 p-6">
         <div className="max-w-3xl mx-auto border border-gray-300 focus:ring-0 focus:outline-none">
           <div className="relative border-gray-300 focus:ring-0 focus:outline-none">
             <Textarea

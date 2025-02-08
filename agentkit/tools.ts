@@ -89,11 +89,22 @@ export class RestockItemTool extends Tool {
   }
 }
 
+export class AskForRestockConfirmationTool extends Tool {
+  name = "AskForRestockConfirmationTool";
+  description =
+    "A tool to ask the user if they would like to restock an item after decreasing its stock levels. " +
+    "This tool should be called after using the DecreaseStockTool to prompt the user for restocking.";
+
+  async _call(input: string | undefined): Promise<string> {
+    return "restock-confirmation";
+  }
+}
+
 export class DecreaseStockTool extends Tool {
   name = "DecreaseStockTool";
   description = `A tool to decrease the stock levels of an existing item in the InventoryManager contract. 
-    If name is provided instead of id, run query the contract to find out which to decrement.
-    After decrementing the stock level, you have to run a check to decide whether or not restock.`;
+    If name is provided instead of id, run **DefaultGraphQueryTool** to find out which item that id belongs to.
+    After decrementing the stock level, evaluate if we need to restock.`;
 
   private contract_address: string;
   constructor(contract_address: string) {
@@ -164,7 +175,7 @@ export class DecreaseStockTool extends Tool {
       // Retrieve the updated item info: (name, quantity, threshold, price, supplier)
       const [name, newQuantity, threshold, price, supplier] =
         await contract.getItem(numItemId);
-      return `DecreaseStock successful! Item ${numItemId} ("${name}") is now at quantity: ${newQuantity}. Should I run restock decision process?`;
+      return `Stock has been decreased! Item ${numItemId} ("${name}") is now at quantity: ${newQuantity}. I will now evaluate if we need to restock.`;
     } catch (error: any) {
       return `Transaction failed: ${error.message}`;
     }
@@ -318,13 +329,13 @@ export class GraphSupplierLeadTimeQueryTool extends Tool {
 export class DefaultGraphQueryTool extends Tool {
   name = "InventoryLevelsGraphQuery";
   description =
-    "A tool to query The Graph subgraph for the top 5 suppliers, the items in the inventory and the threshold amounts." +
+    "A tool to query The Graph subgraph for all suppliers and items in the inventory and the threshold amounts." +
     "Run this query to get the current inventory levels." +
     "Querying this will give the supplier's id, name, totalOrders, totalAmountSpent" +
     "items shows the CURRENT inventory amounts. it has id, itemId, name, quantity" +
     " itemsAdded shows the INITIAL inventory amounts. it has id, itemId, name, quantity, threshold" +
     "Takes one optional input: a JSON string with a 'query' field. " +
-    "If not provided, it uses a default query with 'suppliers(first: 5)' and 'itemAddeds(first: 5)'.";
+    "If not provided, it uses a default query with 'suppliers' and 'itemAddeds'.";
 
   schema = z
     .object({
@@ -334,25 +345,18 @@ export class DefaultGraphQueryTool extends Tool {
 
   private defaultQuery = `
    {
-    suppliers(first: 5) {
+    suppliers {
         id
         name
         totalOrders
         totalAmountSpent
     }
-    items(first: 5) {
+    items {
         id
         itemId
         name
         quantity
     }
-        itemAddeds(first: 5) {
-        id
-        itemId
-        name
-        quantity
-        threshold
-  }
 }
     `;
 
