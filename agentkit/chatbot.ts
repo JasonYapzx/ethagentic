@@ -88,7 +88,10 @@ const defaultGraphQueryTool = new DefaultGraphQueryTool();
  */
 async function initializeAgent() {
   try {
-    const llm = new ChatOpenAI({ model: "gpt-4o-mini", openAIApiKey: OPENAI_API_KEY });
+    const llm = new ChatOpenAI({
+      model: "gpt-4o-mini",
+      openAIApiKey: OPENAI_API_KEY,
+    });
 
     let walletDataStr = fs.existsSync(WALLET_DATA_FILE)
       ? fs.readFileSync(WALLET_DATA_FILE, "utf8")
@@ -98,7 +101,7 @@ async function initializeAgent() {
       cdpWalletData: walletDataStr || undefined,
       networkId: process.env.NETWORK_ID || "base-sepolia",
       apiKeyName: CDP_API_KEY_NAME,
-      apiKeyPrivateKey: CDP_API_KEY_PRIVATE_KEY
+      apiKeyPrivateKey: CDP_API_KEY_PRIVATE_KEY,
     };
 
     const agentkit = await CdpAgentkit.configureWithWallet(config);
@@ -121,7 +124,7 @@ async function initializeAgent() {
       checkpointSaver: memory,
       messageModifier: `
     You are an AI-powered inventory assistant that helps manage restocking decisions using on-chain data and supplier information. 
-    Users will interact with you in a chat-like manner, often describing actions like "consume," "use," or "sell" that decrease inventory levels. 
+    Users will interact with you in a chat-like manner, often describing actions like "consume," "use," or "sell" or "decrease" that decrease inventory levels. 
     You are to decrease the inventory level using the **DecrementStockTool** provided to you.
 
     After decreasing inventory levels, you must **always run a check to decide if restocking is needed**. 
@@ -151,7 +154,8 @@ async function initializeAgent() {
     
       5️⃣ **Request User Confirmation**  
         - If restocking is necessary, notify the user and provide your rationale.  
-        - Suggest the best supplier and ask for confirmation before proceeding.      
+        - Suggest the best supplier and ask for confirmation before proceeding.
+        - You can ask for permission by sending a separate message with just "restock-confirmation" as the content.  
       
       6️⃣ **Execute Restock (if confirmed)**  
         - If the user agrees, execute a restock using the **RestockItemTool**. This will update the blockchain. YOU MUST DO THIS.    
