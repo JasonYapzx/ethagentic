@@ -3,6 +3,7 @@ import { Section } from '@/components/common/section';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SidebarMenuButton } from '@/components/ui/sidebar';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
 import { IdentityCard, Avatar, Badge, Identity, Name, Address, Socials } from '@coinbase/onchainkit/identity';
@@ -17,6 +18,8 @@ export default function Page() {
     const handleDisconnect = useCallback(() => {
       connectors.map((connector: any) => disconnect({ connector }));
     }, [disconnect, connectors]);
+
+    const isMobile = useIsMobile();
 
     return (<div className="container mx-auto p-4">
         <Section id="profile" title="Profile Dashboard">
@@ -39,7 +42,7 @@ export default function Page() {
                             <Name className='text-foreground w-full'>
                                 <Badge />
                             </Name>
-                            <Address isSliced={false} className='text-foreground w-full' />
+                            <Address isSliced={isMobile} className='text-foreground w-full' />
                         </Identity>
                     </CardContent>
                 </Card>
