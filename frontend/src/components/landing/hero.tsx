@@ -27,7 +27,7 @@ function HeroPill() {
         🛠️ New
       </div>
       <p className="text-xs font-medium text-primary sm:text-sm">
-        Introducing Storagen
+        Introducing Storagent
       </p>
       <svg
         width="12"

@@ -15,12 +15,12 @@ import {
 export const BLUR_FADE_DELAY = 0.15;
 
 export const siteConfig = {
-  name: "Storagen",
+  name: "Storagent",
   description: "Automated your inventory with natural language",
   cta: "Get Started",
   url: process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000",
   keywords: [
-    "Storagen",
+    "Storagent",
     "Automated Inventory System",
     "Smart Contract Integration",
     "AI Agent Workflow",
@@ -29,9 +29,9 @@ export const siteConfig = {
     github: "https://github.com/eugenetayyj/ethagentic",
   },
   hero: {
-    title: "Storagen",
+    title: "Storagent",
     description:
-      "Get assistance with your inventory management needs with Storagen, a powerful AI agent inventory management system.",
+      "Get assistance with your inventory management needs with Storagent, a powerful AI agent inventory management system.",
     cta: "Get Storagent",
     ctaDescription: "Stored entirely on-chain, ensuring transparency and security.",
   },
@@ -135,7 +135,7 @@ export const siteConfig = {
       { text: "Contact", url: "https://github.com/eugenetayyj/ethagentic" },
     ],
     bottomText: "All rights reserved.",
-    brandText: "STORAGEN",
+    brandText: "STORAGENT",
   },
 };
 
