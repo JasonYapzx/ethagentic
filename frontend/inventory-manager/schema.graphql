@@ -1,0 +1,98 @@
+type Supplier
+  @entity { # Added manually
+  id: String!
+  name: String!
+  totalOrders: BigInt! # How many times this supplier has been used
+  totalAmountSpent: BigInt! # Total money spent on this supplier
+  avgDeliveryTime: BigInt! # Average number of days from order to stock arriving
+}
+
+type Item
+  @entity { # Added manually
+  id: String!
+  itemId: BigInt! # uint256
+  name: String! # string
+  quantity: BigInt! # uint256
+  threshold: BigInt! # uint256
+  price: BigInt! # uint256
+  supplier: Supplier! # Supplier
+}
+
+type _Schema_  # Added manually
+  @fulltext(
+    name: "SupplierSearch"
+    language: en
+    algorithm: rank
+    include: [{ entity: "Supplier", fields: [{ name: "name" }] }]
+  )
+
+type ItemAdded @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  name: String! # string
+  quantity: BigInt! # uint256
+  threshold: BigInt! # uint256
+  price: BigInt! # uint256
+  supplier: String! # string
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type LowStockDetected @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  name: String! # string
+  quantity: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type RestockInitiated @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  restockAmount: BigInt! # uint256
+  supplier: String! # string
+  totalCost: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type StockDecreased @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  amount: BigInt! # uint256
+  newQuantity: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type StockDecreasedData
+  @entity(timeseries: true) { # Added manually
+  id: Int8!
+  itemId: BigInt! # uint256
+  amount: BigInt! # uint256
+  newQuantity: BigInt! # uint256
+  timestamp: Timestamp!
+}
+
+type StockDecreasedAggregation  # Added manually
+  @aggregation(intervals: ["hour", "day"], source: "StockDecreasedData") {
+  id: Int8!
+  itemId: BigInt! # uint256
+  totalAmount: BigInt! @aggregate(fn: "sum", arg: "amount")
+  timestamp: Timestamp!
+}
+
+type StockIncreased @entity(immutable: true) {
+  id: Bytes!
+  itemId: BigInt! # uint256
+  amount: BigInt! # uint256
+  newQuantity: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
