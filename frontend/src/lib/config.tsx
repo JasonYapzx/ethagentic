@@ -127,11 +127,12 @@ export const siteConfig = {
       },
       {
         icon: <Icons.etherueum className="h-5 w-5" />,
-        url: "https://ethglobal.com/showcase?events=agents",
+        url: "https://ethglobal.com/showcase/storagent-o4uaj",
       },
     ],
     links: [
-      { text: "ETHGlobal", url: "https://ethglobal.com/showcase?events=agents" },
+      { text: "Project", url: "https://ethglobal.com/showcase/storagent-o4uaj" },
+      { text: "Agentic", url: "https://ethglobal.com/events/agents" },
       { text: "Contact", url: "https://github.com/eugenetayyj/ethagentic" },
     ],
     bottomText: "All rights reserved.",

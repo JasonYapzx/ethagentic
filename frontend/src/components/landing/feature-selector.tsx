@@ -1,5 +1,7 @@
 "use client";
 
+import { FileIcon } from "lucide-react";
+import Link from "next/link";
 import React, { useState } from "react";
 
 interface FeatureOption {
@@ -7,6 +9,8 @@ interface FeatureOption {
   title: string;
   description: string;
   code: string;
+  filePath?: string;
+  link: string;
 }
 
 interface FeatureSelectorProps {
@@ -26,9 +30,8 @@ export const FeatureSelector: React.FC<FeatureSelectorProps> = ({
             <button
               key={option.id}
               onClick={() => setSelectedIndex(index)}
-              className={`flex-shrink-0 w-64 md:w-full text-left p-4 mb-2 mr-2 last:mr-0 md:mr-0 rounded border border-border ${
-                selectedIndex === index ? "bg-accent/70" : "hover:bg-muted/50"
-              }`}
+              className={`flex-shrink-0 hover:cursor-pointer w-64 md:w-full text-left p-4 mb-2 mr-2 last:mr-0 md:mr-0 rounded-none border border-border ${selectedIndex === index ? "bg-accent/70" : "hover:bg-muted/50"
+                }`}
             >
               <h3 className="font-medium tracking-tight">{option.title}</h3>
               <p className="text-sm text-muted-foreground">
@@ -38,7 +41,16 @@ export const FeatureSelector: React.FC<FeatureSelectorProps> = ({
           ))}
         </div>
       </div>
-      <div className="col-span-1 md:col-span-3">
+      <div className="col-span-1 md:col-span-3 p-4">
+        <Link 
+          href={features[selectedIndex].link} 
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:underline flex items-center bg-accent p-2 text-sm text-foreground hover:cursor-pointer"
+        >
+          <FileIcon className="mr-2 h-4 w-4" />
+          {features[selectedIndex].filePath}
+        </Link>
         <div
           className="bg-background font-mono text-sm [&>pre]:!bg-transparent [&>pre]:p-4 [&_code]:break-all md:max-h-[45vh] overflow-scroll"
           dangerouslySetInnerHTML={{ __html: features[selectedIndex].code }}
