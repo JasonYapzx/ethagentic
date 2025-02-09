@@ -7,6 +7,7 @@ import { siteConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import WalletLogin from "../onchain-kit/wallet";
+import Image from "next/image";
 
 export function Header() {
   return (
@@ -17,8 +18,8 @@ export function Header() {
           title="brand-logo"
           className="relative mr-6 flex items-center space-x-2"
         >
-          <Icons.logo className="w-auto" />
-          <span className="font-semibold text-lg">{siteConfig.name}</span>
+          <Image src="/images/storagent.png" width={180} height={80} alt={"Logo"} />
+          {/* <span className="font-semibold text-lg">{siteConfig.name}</span> */}
         </Link>
         <div className="hidden lg:block">
           <WalletLogin text="Connect Wallet" />
