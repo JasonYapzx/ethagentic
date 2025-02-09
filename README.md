@@ -40,6 +40,7 @@
 - **The Graph**:
 
   - Supports subgraphs for aggregated queries, event tracking, and pagination.
+  - **The Graph Explanation**: [https://youtu.be/EG-RwFp6aL0](https://youtu.be/EG-RwFp6aL0)
 
 - **Nillion**:
 
