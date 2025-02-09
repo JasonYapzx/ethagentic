@@ -13,12 +13,8 @@ import { ItemSearch } from "@/components/app/dashboard/item-search";
 export const revalidate = 0; // Equivalent to no-store
 
 export default async function AppPage() {
-  const {
-    GetItems,
-    GetStockDecreasedAggregationDay,
-    GetStockDecreasedAggregationHour,
-    GetStockDecreasedData,
-  } = getBuiltGraphSDK();
+  const { GetItems, GetStockDecreasedAggregationDay, GetStockDecreasedData } =
+    getBuiltGraphSDK();
   const { items } = await GetItems();
   console.log(items);
 

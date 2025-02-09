@@ -14,36 +14,38 @@ export default function MqttPublisher() {
   const [message, setMessage] = useState("");
   const [status, setStatus] = useState("Disconnected");
 
-  useEffect(() => {
-    console.log("Connecting to MQTT broker...");
-    const mqttClient = mqtt.connect("ws://broker.hivemq.com:8000/mqtt");
+  // Commented out because app crashes on deployment due to unsecure websocket connection
+  // useEffect(() => {
+  //   console.log("Connecting to MQTT broker...");
+  //   const mqttClient = mqtt.connect("wss://broker.hivemq.com:8884/mqtt");
 
-    mqttClient.on("connect", () => {
-      setStatus("Connected");
-      setClient(mqttClient);
-    });
+  //   mqttClient.on("connect", () => {
+  //     console.log("Connected to MQTT broker");
+  //     setStatus("Connected");
+  //     setClient(mqttClient);
+  //   });
 
-    mqttClient.on("error", (err) => {
-      console.error("MQTT error:", err);
-      setStatus("Error: " + err.message);
-    });
+  //   mqttClient.on("error", (err) => {
+  //     console.error("MQTT error:", err);
+  //     setStatus("Error: " + err.message);
+  //   });
 
-    return () => {
-      mqttClient.end();
-    };
-  }, []);
+  //   return () => {
+  //     mqttClient.end();
+  //   };
+  // }, []);
 
   const publishMessage = () => {
-    if (client && topic) {
-      client.publish(topic, "start", (error) => {
-        if (error) {
-          console.error("Publish error:", error);
-          setStatus("Publish error: " + error.message);
-        } else {
-          setStatus("Message published successfully");
-        }
-      });
-    }
+    // if (client && topic) {
+    //   client.publish(topic, "start", (error) => {
+    //     if (error) {
+    //       console.error("Publish error:", error);
+    //       setStatus("Publish error: " + error.message);
+    //     } else {
+    //       setStatus("Message published successfully");
+    //     }
+    //   });
+    // }
   };
 
   return <Button onClick={publishMessage}>Proceed with restock</Button>;
