@@ -4,6 +4,7 @@ import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Header } from "@/components/landing/header";
 import { Hero } from "@/components/landing/hero";
+import { HeroVideo } from "@/components/landing/hero-video";
 import { UseCases } from "@/components/landing/use-cases";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
         <Header />
         <Hero />
         <Examples />
+        <HeroVideo />
         <UseCases />
         <Features />
         <CTA />
