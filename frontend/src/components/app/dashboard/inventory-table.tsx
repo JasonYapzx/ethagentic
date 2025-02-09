@@ -1,3 +1,4 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,6 +16,10 @@ const inventoryData = [
   { id: 4, name: "Device D", quantity: 200, usageRate: "10/day" },
   { id: 5, name: "Product E", quantity: 150, usageRate: "7/day" },
 ];
+
+const handleBuyNow = () => {
+  window.open("https://www.amazon.com", '_blank');
+}
 
 export function InventoryTable({ items }: { items: any[] }) {
   return (
@@ -44,7 +49,7 @@ export function InventoryTable({ items }: { items: any[] }) {
               ${((item.price / 100) * item.quantity).toFixed(2)}
             </TableCell>
             <TableCell>
-              <Button size="sm">Buy Now</Button>
+              <Button size="sm" onClick={() => handleBuyNow()}>Buy Now</Button>
             </TableCell>
           </TableRow>
         ))}
