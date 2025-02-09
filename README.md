@@ -35,7 +35,8 @@
   - **CDP Agent Kit**: AI-powered inventory management.
   - **CDP Onchain Kit**: Provides access to wallets and smart contract interactions.
   - **CDP Commerce**: Enables consumers to purchase items from the warehouse.
-
+  - **Replit Template**: [https://replit.com/@tanlenggg/ethagentic](https://replit.com/@tanlenggg/ethagentic)
+ 
 - **The Graph**:
 
   - Supports subgraphs for aggregated queries, event tracking, and pagination.
